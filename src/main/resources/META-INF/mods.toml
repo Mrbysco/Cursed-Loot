@@ -1,0 +1,15 @@
+modLoader="javafml"
+loaderVersion="[36,)"
+#issueTrackerURL=""
+license="MIT"
+
+[[mods]]
+modId="cursedloot"
+version="${file.jarVersion}"
+displayName="Cursed Loot"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/cursed-loot"
+authors="Mrbysco, ShyNieke"
+description='''
+Adds cursed loot to the game.
+'''
+credits="Credits to the game Moonlighter for sparking the idea"

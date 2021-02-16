@@ -1,0 +1,34 @@
+{
+    "_comment": "Config",
+    "config.cursedloot:title": "Cursed Loot Config",
+    "config.cursedloot:supported.currency": "Supported Currency",
+
+    "_comment": "Blocks",
+    "block.cursedloot.base_chest": "Base Chest",
+
+    "_comment": "Items",
+    "item.cursedloot.hidden_item": "Hidden Item",
+
+    "_comment": "Tiles",
+
+    "_comment": "Container",
+    "cursedloot:container.base_chest": "Base Chest",
+
+    "_comment": "Lore",
+    "cursedloot:destroycurse.lore": "Destroys 1 item curse in direction shown when placed.",
+    "cursedloot:remainhidden.lore": "Item remains hidden while currently in the wild.",
+    "cursedloot:toporbottom.lore": "Item must be placed at the top or bottom of bag.",
+    "cursedloot:destroyitem.lore": "Destroys 1 Item in direction shown upon returning to Town.",
+    "cursedloot:leftorright.lore": "Item must be placed to the left or right of bag.",
+    "cursedloot:itembecomesthis.lore": "Item in direction shown becomes this Item upon returning to Town.",
+    "cursedloot:itemtoshop.lore": "Immediately sends Item in the direction shown to your base chest.",
+
+    "cursedloot:hitsbreaksitem.lore": "Item breaks if you receive too many hits.",
+    "cursedloot:hitstaken.lore": "%d hits have been received since getting the item.",
+
+    "cursedloot:broken.lore": "CURSE IS BROKEN. PLEASE REPORT",
+
+    "_comment": "Messages",
+    "cursedloot:hits.broken.item": "%s§r §ehas been broken by it's curse§r",
+    "cursedloot:hidden.item.revealed": "§cSecret item has revealed itself upon you."
+}
