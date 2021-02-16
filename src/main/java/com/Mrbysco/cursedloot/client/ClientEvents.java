@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.ITextProperties;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -73,13 +74,17 @@ public class ClientEvents {
                 List<ITextComponent> tooltips = stack.getTooltip((PlayerEntity) null, TooltipFlags.ADVANCED);
                 if(!tooltips.isEmpty()) {
                     for(int i = 0; i < tooltips.size(); i++) {
-                        if(tooltips.get(i).equals(Reference.emptyComponent)) {
+                        ITextComponent component = tooltips.get(i);
+                        if(component.equals(Reference.emptyComponent)) {
                             int location = i - 1;
                             posY = event.getY() + (fontHeight * location);
                             if(mc.gameSettings.advancedItemTooltips) {
                                 posY += (int)(fontHeight * 1.5);
                             } else {
                                 posY -= 4;
+                            }
+                            if(event.getWidth() < 200) {
+                                posY -= fontHeight;
                             }
                             break;
                         }
