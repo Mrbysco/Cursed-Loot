@@ -7,7 +7,7 @@ import com.mrbysco.cursedloot.util.info.CurseLocation;
 import com.mrbysco.cursedloot.util.info.CursePos;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -51,12 +51,12 @@ public class ClientEvents {
             return;
 
         ItemStack stack = event.getStack();
-        FontRenderer fontRenderer = mc.fontRenderer;
-        int fontHeight = fontRenderer.FONT_HEIGHT + 1;
-
         CompoundNBT tags = stack.hasTag() && stack.getTag() != null ? stack.getTag() : new CompoundNBT();
 
         if(!tags.isEmpty() && CurseHelper.hasCurse(tags)) {
+            FontRenderer fontRenderer = mc.fontRenderer;
+            int fontHeight = fontRenderer.FONT_HEIGHT + 1;
+
             RenderSystem.enableBlend();
 
             CurseLocation curseTextureInfo = CurseHelper.getIconLocation(tags);
@@ -70,12 +70,17 @@ public class ClientEvents {
                 int posX = event.getX() + middle;
                 int posY = event.getY() + 14;
 
-                List<ITextComponent> tooltips = stack.getTooltip((PlayerEntity) null, ITooltipFlag.TooltipFlags.NORMAL);
+                List<ITextComponent> tooltips = stack.getTooltip((PlayerEntity) null, TooltipFlags.ADVANCED);
                 if(!tooltips.isEmpty()) {
                     for(int i = 0; i < tooltips.size(); i++) {
                         if(tooltips.get(i).equals(Reference.emptyComponent)) {
                             int location = i - 1;
-                            posY = event.getY() + (mc.gameSettings.advancedItemTooltips ? 9 + fontHeight/2 + (fontHeight * 2) : 9 + fontHeight/2) + (fontHeight * location);
+                            posY = event.getY() + (fontHeight * location);
+                            if(mc.gameSettings.advancedItemTooltips) {
+                                posY += (int)(fontHeight * 1.5);
+                            } else {
+                                posY -= 4;
+                            }
                             break;
                         }
                     }
