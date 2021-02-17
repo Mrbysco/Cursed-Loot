@@ -77,4 +77,28 @@ public class BaseChestInventory extends Inventory {
 		}
 		this.associatedChest = null;
 	}
+
+	public boolean addItemStackToInventory(ItemStack stack) {
+		if (stack.isEmpty()) {
+			return false;
+		}
+		int slot = getFirstEmptyStack();
+		if(slot >= 0) {
+			setInventorySlotContents(slot, stack.copy());
+			stack.setCount(0);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public int getFirstEmptyStack() {
+		for(int i = 0; i < this.getSizeInventory(); ++i) {
+			if (this.getStackInSlot(i).isEmpty()) {
+				return i;
+			}
+		}
+
+		return -1;
+	}
 }

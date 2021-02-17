@@ -1,5 +1,7 @@
 package com.mrbysco.cursedloot.handlers;
 
+import com.mrbysco.cursedloot.blocks.inventory.BaseChestInventory;
+import com.mrbysco.cursedloot.init.CursedWorldData;
 import com.mrbysco.cursedloot.util.CurseHelper;
 import com.mrbysco.cursedloot.util.CurseTags;
 import com.mrbysco.cursedloot.util.InvHelper;
@@ -9,13 +11,14 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+
+import java.util.List;
 
 public class ItemHandler {
 	/*
@@ -78,53 +81,30 @@ public class ItemHandler {
 								tag2 = CurseHelper.removeCurse(tag2);
 								ItemStack stack2 = stack.copy();
 
-								if(tag2.isEmpty()) {
-									tag2 = null;
-								}
 								stack2.setTag(tag2);
 								inv.setInventorySlotContents(i, stack2);
 							} else {
 								int directionalSlot = InvHelper.getDirectionalSlotNumber(stack, i);
 								if(directionalSlot != -1) {
 									ItemStack directionalStack = inv.getStackInSlot(directionalSlot);
-									
 									if(directionalStack.hasTag() && directionalStack.getTag() != null) {
 										CompoundNBT dirTag = directionalStack.getTag();
 										if(CurseHelper.hasCurse(dirTag)) {
 											if(dirTag.getBoolean(CurseTags.REMAIN_HIDDEN.getCurseTag())) {
-												ItemStack revealedStack = ItemStack.read(dirTag.getCompound(CurseTags.HIDDEN_TAG));
-												if(directionalStack.getCount() > 1) {
-													int total = revealedStack.getCount() * directionalStack.getCount();
-													int stacks = (int)Math.ceil((double)total / (double)revealedStack.getMaxStackSize());
-													if(stacks > 1) {
-														for(int s = 0; s < stacks; s++) {
-															ItemStack stackCopy = revealedStack.copy();
-															if(s == 0) {
-																stackCopy.setCount(stackCopy.getMaxStackSize());
-																total -= revealedStack.getMaxStackSize();
-																inv.setInventorySlotContents(directionalSlot, stackCopy);
-															} else {
-																if(total > revealedStack.getMaxStackSize()) {
-																	stackCopy.setCount(stackCopy.getMaxStackSize());
-																	total -= revealedStack.getMaxStackSize();
-																} else {
-																	stackCopy.setCount(total);
-																	total -= total;
-																}
-																if(!inv.addItemStackToInventory(stackCopy)) {
-																	player.dropItem(stackCopy, false);
-																}
+												List<ItemStack> revealedStacks = CurseHelper.revealStacks(directionalStack, dirTag);
+												if(!revealedStacks.isEmpty()) {
+													for(int s = 0; s < revealedStacks.size(); s++) {
+														if(s == 0) {
+															inv.setInventorySlotContents(directionalSlot, revealedStacks.get(s));
+														} else {
+															if(!inv.addItemStackToInventory(revealedStacks.get(s))) {
+																player.dropItem(revealedStacks.get(s), false);
 															}
 														}
-													} else {
-														revealedStack.setCount(total);
-														inv.setInventorySlotContents(directionalSlot, revealedStack);
 													}
-												} else {
-													inv.setInventorySlotContents(directionalSlot, revealedStack);
 												}
 											} else {
-												CompoundNBT curseLessTag = CurseHelper.removeCurse(dirTag).copy();
+												CompoundNBT curseLessTag = CurseHelper.removeCurse(dirTag);
 												
 												directionalStack.setTag(curseLessTag);
 											}
@@ -134,20 +114,49 @@ public class ItemHandler {
 								}
 							}
 						}
+						if(stack.getItem() == Items.ROTTEN_FLESH) {
+							System.out.println(stack.getTag());
+						}
 						if(tag.getBoolean(CurseTags.ITEM_TO_SHOP.getCurseTag())) {
 							if(tag.getBoolean(CurseTags.USED_TO_SHOP_TAG)) {
 								CompoundNBT tag2 = tag.copy();
 								tag2 = CurseHelper.removeCurse(tag2);
 								ItemStack stack2 = stack.copy();
-								
+
 								stack2.setTag(tag2);
 								inv.setInventorySlotContents(i, stack2);
 							} else {
 								int directionalSlot = InvHelper.getDirectionalSlotNumber(stack, i);
 								if(directionalSlot != -1) {
 									ItemStack directionalStack = inv.getStackInSlot(directionalSlot);
+									if(!directionalStack.isEmpty()) {
+										BaseChestInventory inventory = InvHelper.getChestInventory(player, world);
+										if(directionalStack.hasTag() && directionalStack.getTag() != null) {
+											CompoundNBT dirTag = directionalStack.getTag();
+											if(CurseHelper.hasCurse(dirTag)) {
+												if(dirTag.getBoolean(CurseTags.REMAIN_HIDDEN.getCurseTag())) {
+													List<ItemStack> revealedStacks = CurseHelper.revealStacks(directionalStack, dirTag);
+													if(!revealedStacks.isEmpty()) {
+														for(ItemStack revealedStack : revealedStacks) {
+															inventory.addItemStackToInventory(revealedStack);
+														}
+													}
+												} else {
+													CompoundNBT curseLessTag = CurseHelper.removeCurse(dirTag);
+													directionalStack.setTag(curseLessTag);
+													inventory.addItemStackToInventory(directionalStack);
+												}
+											} else {
+												inventory.addItemStackToInventory(directionalStack);
+											}
+										} else {
+											inventory.addItemStackToInventory(directionalStack);
+										}
+										directionalStack.setCount(0);
 
-									tag.putBoolean(CurseTags.USED_TO_SHOP_TAG, true);
+										tag.putBoolean(CurseTags.USED_TO_SHOP_TAG, true);
+										CursedWorldData.get(world).markDirty();
+									}
 								}
 							}
 						}

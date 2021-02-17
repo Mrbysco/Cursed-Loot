@@ -22,6 +22,8 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.List;
+
 @OnlyIn(
     value = Dist.CLIENT,
     _interface = IChestLid.class
@@ -83,9 +85,10 @@ public class BaseChestTile extends TileEntity implements IChestLid, ITickableTil
                 this.lidAngle = 0.0F;
             }
         }
+        checkForPlayer();
     }
 
-    public void checkForPlayer(int range) {
+    public void checkForPlayer() {
         if(!world.isRemote && world.getGameTime() % 10 == 0) {
             for(PlayerEntity player : world.getLoadedEntitiesWithinAABB(ServerPlayerEntity.class, checkRadius)) {
                 PlayerInventory inv = player.inventory;
@@ -96,39 +99,18 @@ public class BaseChestTile extends TileEntity implements IChestLid, ITickableTil
                             CompoundNBT tag = stack.getTag();
                             if(tag.getBoolean(CurseTags.REMAIN_HIDDEN.getCurseTag())) {
                                 if(tag.contains(CurseTags.HIDDEN_TAG)) {
-                                    ItemStack revealedStack = ItemStack.read(tag.getCompound(CurseTags.HIDDEN_TAG));
-                                    if(stack.getCount() > 1) {
-                                        int total = revealedStack.getCount() * stack.getCount();
-                                        int stacks = (int)Math.ceil((double)total / (double)revealedStack.getMaxStackSize());
-                                        if(stacks > 1) {
-                                            for(int s = 0; s < stacks; s++) {
-                                                ItemStack stackCopy = revealedStack.copy();
-                                                if(s == 0) {
-                                                    stackCopy.setCount(stackCopy.getMaxStackSize());
-                                                    total -= revealedStack.getMaxStackSize();
-                                                    inv.setInventorySlotContents(i, stackCopy);
-                                                } else {
-                                                    if(total > revealedStack.getMaxStackSize()) {
-                                                        stackCopy.setCount(stackCopy.getMaxStackSize());
-                                                        total -= revealedStack.getMaxStackSize();
-                                                    } else {
-                                                        stackCopy.setCount(total);
-                                                        total -= total;
-                                                    }
-                                                    if(!inv.addItemStackToInventory(stackCopy)) {
-                                                        player.dropItem(stackCopy, false);
-                                                    }
+                                    List<ItemStack> revealedStacks = CurseHelper.revealStacks(stack, tag);
+                                    if (!revealedStacks.isEmpty()) {
+                                        for (int s = 0; s < revealedStacks.size(); s++) {
+                                            if (s == 0) {
+                                                inv.setInventorySlotContents(i, revealedStacks.get(s));
+                                            } else {
+                                                if (!inv.addItemStackToInventory(revealedStacks.get(s))) {
+                                                    player.dropItem(revealedStacks.get(s), false);
                                                 }
                                             }
-                                        } else {
-                                            revealedStack.setCount(total);
-                                            inv.setInventorySlotContents(i, revealedStack);
                                         }
-                                    } else {
-                                        inv.setInventorySlotContents(i, revealedStack);
                                     }
-
-                                    player.sendStatusMessage(new TranslationTextComponent("cursedloot:hidden.item.revealed"), true);
                                 }
                             }
                             if(tag.getBoolean(CurseTags.DESTROY_ITEM.getCurseTag())) {

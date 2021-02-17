@@ -3,12 +3,16 @@ package com.mrbysco.cursedloot.util;
 import com.mrbysco.cursedloot.Reference;
 import com.mrbysco.cursedloot.util.info.CurseLocation;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -17,6 +21,36 @@ public class CurseHelper {
 	public static CurseTags getRandomTag() {
 		int random = new Random().nextInt(CurseTags.values().length);
 		return CurseTags.values()[random];
+	}
+
+	public static List<ItemStack> revealStacks(ItemStack hiddenStack, @Nonnull CompoundNBT tag) {
+		ItemStack revealedStack = ItemStack.read(tag.getCompound(CurseTags.HIDDEN_TAG));
+		if (hiddenStack.getCount() > 1) {
+			int total = revealedStack.getCount() * hiddenStack.getCount();
+			int stackAmount = (int) Math.ceil((double) total / (double) revealedStack.getMaxStackSize());
+			if (stackAmount > 1) {
+				List<ItemStack> stacks = new ArrayList<>();
+				for (int s = 0; s < stackAmount; s++) {
+					ItemStack stackCopy = revealedStack.copy();
+					if (s == 0) {
+						stackCopy.setCount(stackCopy.getMaxStackSize());
+						total -= revealedStack.getMaxStackSize();
+					} else {
+						if (total > revealedStack.getMaxStackSize()) {
+							stackCopy.setCount(stackCopy.getMaxStackSize());
+							total -= revealedStack.getMaxStackSize();
+						} else {
+							stackCopy.setCount(total);
+							total -= total;
+						}
+					}
+					stacks.add(stackCopy);
+				}
+			} else {
+				return Collections.singletonList(revealedStack);
+			}
+		}
+		return Collections.singletonList(revealedStack);
 	}
 
 	public static CurseDirection getRandomLocation() {
@@ -76,7 +110,13 @@ public class CurseHelper {
 		}
 		removeDirections(compound);
 		compound.remove(CurseTags.used_destroy_curse);
+		compound.remove(CurseTags.USED_TO_SHOP_TAG);
 		compound.remove("cursedLoot");
+		if(compound.isEmpty()) {
+			compound = null;
+		} else {
+			compound = compound.copy();
+		}
 		return compound;
 	}
 
