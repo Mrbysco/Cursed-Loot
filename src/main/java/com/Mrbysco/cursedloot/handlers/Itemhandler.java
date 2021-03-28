@@ -183,7 +183,7 @@ public class ItemHandler {
 							if(tag.getBoolean(CurseTags.HITS_BREAK_ITEM.getCurseTag())) {
 								int hits = tag.getInt(CurseTags.HITS_TAG);
 								if(hits > 5) {
-									player.sendStatusMessage(new TranslationTextComponent("cursedloot:hits.broken.item").append(stack.getDisplayName()), true);
+									player.sendStatusMessage(new TranslationTextComponent("cursedloot:hits.broken.item").appendSibling(stack.getDisplayName()), true);
 									inv.setInventorySlotContents(i, ItemStack.EMPTY);
 								} else {
 									tag.putInt(CurseTags.HITS_TAG, hits++);
