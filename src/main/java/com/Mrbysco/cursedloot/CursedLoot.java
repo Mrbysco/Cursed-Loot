@@ -41,7 +41,7 @@ public class CursedLoot {
 		MinecraftForge.EVENT_BUS.register(new ItemHandler());
 		MinecraftForge.EVENT_BUS.register(new ChestHandler());
 
-		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 			eventBus.addListener(ClientHandler::onClientSetup);
 			eventBus.addListener(ClientHandler::preStitchEvent);
 			MinecraftForge.EVENT_BUS.register(new ClientEvents());

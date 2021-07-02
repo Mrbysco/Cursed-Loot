@@ -24,14 +24,14 @@ public enum CurseTags {
     private final ResourceLocation textureLocation;
     private final boolean directional;
 
-    private CurseTags(int curseId, String name, String textureLocation) {
+    CurseTags(int curseId, String name, String textureLocation) {
         this.curseID = curseId;
         this.curseTag = Reference.PREFIX + name;
         this.textureLocation = new ResourceLocation(Reference.MOD_ID, "textures/gui/" + textureLocation + ".png");
         this.directional = false;
     }
 
-    private CurseTags(int curseId, String name, String textureLocation, boolean directional) {
+    CurseTags(int curseId, String name, String textureLocation, boolean directional) {
         this.curseID = curseId;
         this.curseTag = Reference.PREFIX + name;
         this.textureLocation = new ResourceLocation(Reference.MOD_ID, "textures/gui/" + textureLocation + ".png");

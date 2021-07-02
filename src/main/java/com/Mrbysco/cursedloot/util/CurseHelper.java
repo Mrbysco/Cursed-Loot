@@ -2,7 +2,6 @@ package com.mrbysco.cursedloot.util;
 
 import com.mrbysco.cursedloot.Reference;
 import com.mrbysco.cursedloot.util.info.CurseLocation;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
@@ -46,6 +45,7 @@ public class CurseHelper {
 					}
 					stacks.add(stackCopy);
 				}
+				return stacks;
 			} else {
 				return Collections.singletonList(revealedStack);
 			}
@@ -139,12 +139,5 @@ public class CurseHelper {
 			}
 		}
 		return foundCurse;
-	}
-
-	public static void executeCurse(ServerPlayerEntity player, int slot) {
-//		player.getCapability(BaseChestCapProvider.BASE_CHEST_CAP, null).ifPresent(c -> {
-//			BaseInventory baseInv = c.getInventory();
-//			ItemStack stack = baseInv.getStackInSlot(slot);
-//		});
 	}
 }

@@ -32,19 +32,6 @@ public class ClientEvents {
     }
 
     @SubscribeEvent
-    public void tooltipEvent(RenderTooltipEvent event) {
-//        Minecraft mc = Minecraft.getInstance();
-//        if(mc.player == null)
-//            return;
-//
-//        ItemStack stack = event.getStack();
-//        FontRenderer fontRenderer = mc.fontRenderer;
-//        int fontHeight = fontRenderer.FONT_HEIGHT + 1;
-//
-//        CompoundNBT tags = stack.hasTag() && stack.getTag() != null ? stack.getTag() : new CompoundNBT();
-    }
-
-    @SubscribeEvent
     public void tooltipEvent(RenderTooltipEvent.PostText event) {
         Minecraft mc = Minecraft.getInstance();
         if(mc.player == null)
@@ -89,7 +76,7 @@ public class ClientEvents {
                         }
                     }
 
-                    GuiUtils.drawTexturedModalRect(posX, posY, texturePos.getPosX(), texturePos.getPosY(), 32, 32, 1);
+                    GuiUtils.drawTexturedModalRect(event.getMatrixStack(), posX, posY, texturePos.getPosX(), texturePos.getPosY(), 32, 32, 1);
                 }
             }
         }

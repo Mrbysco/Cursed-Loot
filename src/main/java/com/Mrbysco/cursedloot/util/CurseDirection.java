@@ -17,7 +17,7 @@ public enum CurseDirection {
     private final String curseTag;
     private final CursePos directionPos;
 
-    private CurseDirection(String direction, CursePos directionPos) {
+    CurseDirection(String direction, CursePos directionPos) {
         this.curseTag = Reference.PREFIX + direction;
         this.directionPos = directionPos;
     }

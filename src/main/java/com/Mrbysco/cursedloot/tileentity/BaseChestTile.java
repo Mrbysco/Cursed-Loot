@@ -7,7 +7,6 @@ import com.mrbysco.cursedloot.util.CurseTags;
 import com.mrbysco.cursedloot.util.InvHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.IChestLid;
@@ -15,13 +14,13 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @OnlyIn(
@@ -38,8 +37,6 @@ public class BaseChestTile extends TileEntity implements IChestLid, ITickableTil
      * changed.
      */
     private int ticksSinceSync;
-    private AxisAlignedBB checkRadius =  new AxisAlignedBB(this.pos.getX() - 0.5f, this.pos.getY() - 0.5f, this.pos.getZ() - 0.5f, this.pos.getX() + 0.5f, this.pos.getY() + 0.5f, this.pos.getZ() + 0.5f)
-            .expand(-5, -5, -5).expand(5, 5, 5);
 
     public BaseChestTile() {
         super(CursedRegistry.BASE_CHEST_TILE.get());
@@ -65,9 +62,9 @@ public class BaseChestTile extends TileEntity implements IChestLid, ITickableTil
         if (this.numPlayersUsing == 0 && this.lidAngle > 0.0F || this.numPlayersUsing > 0 && this.lidAngle < 1.0F) {
             float f2 = this.lidAngle;
             if (this.numPlayersUsing > 0) {
-                this.lidAngle += 0.1F;
+                this.lidAngle += f;
             } else {
-                this.lidAngle -= 0.1F;
+                this.lidAngle -= f;
             }
 
             if (this.lidAngle > 1.0F) {
@@ -75,7 +72,7 @@ public class BaseChestTile extends TileEntity implements IChestLid, ITickableTil
             }
 
             float f1 = 0.5F;
-            if (this.lidAngle < 0.5F && f2 >= 0.5F) {
+            if (this.lidAngle < f1 && f2 >= f1) {
                 double d3 = (double)i + 0.5D;
                 double d2 = (double)k + 0.5D;
                 this.world.playSound((PlayerEntity)null, d3, (double)j + 0.5D, d2, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, this.world.rand.nextFloat() * 0.1F + 0.9F);
@@ -89,8 +86,10 @@ public class BaseChestTile extends TileEntity implements IChestLid, ITickableTil
     }
 
     public void checkForPlayer() {
-        if(!world.isRemote && world.getGameTime() % 10 == 0) {
-            for(PlayerEntity player : world.getLoadedEntitiesWithinAABB(ServerPlayerEntity.class, checkRadius)) {
+        if(!world.isRemote && world.getGameTime() % 20 == 0) {
+            List<PlayerEntity> players = new ArrayList<>(world.getPlayers());
+            players.removeIf((playerEntity -> getPos().distanceSq(playerEntity.getPosition()) > 100));
+            for(PlayerEntity player : players) {
                 PlayerInventory inv = player.inventory;
                 for(int i = 0; i < inv.mainInventory.size(); i++) {
                     if(!inv.getStackInSlot(i).isEmpty()) {

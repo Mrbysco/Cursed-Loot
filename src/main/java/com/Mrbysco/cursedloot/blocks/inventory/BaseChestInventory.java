@@ -54,7 +54,7 @@ public class BaseChestInventory extends Inventory {
 	 * Don't rename this method to canInteractWith due to conflicts with Container
 	 */
 	public boolean isUsableByPlayer(PlayerEntity player) {
-		return this.associatedChest != null && !this.associatedChest.canBeUsed(player) ? false : super.isUsableByPlayer(player);
+		return (this.associatedChest == null || this.associatedChest.canBeUsed(player)) && super.isUsableByPlayer(player);
 	}
 
 	public void openInventory(PlayerEntity player) {

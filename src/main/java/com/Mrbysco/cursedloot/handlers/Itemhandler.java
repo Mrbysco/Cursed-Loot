@@ -171,7 +171,6 @@ public class ItemHandler {
 	public void damageEvent(LivingHurtEvent event) {
 		if(event.getEntityLiving() instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity)event.getEntityLiving();
-			CompoundNBT playerData = player.getPersistentData();
 
 			if(event.getSource() != null) {
 				PlayerInventory inv = player.inventory;
@@ -186,7 +185,7 @@ public class ItemHandler {
 									player.sendStatusMessage(new TranslationTextComponent("cursedloot:hits.broken.item").appendSibling(stack.getDisplayName()), true);
 									inv.setInventorySlotContents(i, ItemStack.EMPTY);
 								} else {
-									tag.putInt(CurseTags.HITS_TAG, hits++);
+									tag.putInt(CurseTags.HITS_TAG, hits + 1);
 									stack.setTag(tag);
 									
 									inv.setInventorySlotContents(i, stack);
