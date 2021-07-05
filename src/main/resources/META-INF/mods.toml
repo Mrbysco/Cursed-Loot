@@ -1,6 +1,6 @@
 modLoader="javafml"
 loaderVersion="[36,)"
-#issueTrackerURL=""
+issueTrackerURL="https://github.com/Mrbysco/Cursed-Loot/issues"
 license="MIT"
 
 [[mods]]
@@ -13,3 +13,10 @@ description='''
 Adds cursed loot to the game.
 '''
 credits="Credits to the game Moonlighter for sparking the idea"
+
+[[dependencies.cursedloot]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.16.5,1.17)"
+ordering="NONE"
+side="BOTH"
