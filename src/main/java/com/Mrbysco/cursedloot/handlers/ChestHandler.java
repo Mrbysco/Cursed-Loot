@@ -16,11 +16,11 @@ public class ChestHandler {
 	public void firstJoin(PlayerLoggedInEvent event) {
 		PlayerEntity player = event.getPlayer();
 		
-		if(!player.world.isRemote) {
+		if(!player.level.isClientSide) {
 			CompoundNBT playerData = player.getPersistentData();
 
 			if(!playerData.getBoolean(baseChestTag)) {
-				player.inventory.addItemStackToInventory(new ItemStack(CursedRegistry.BASE_CHEST.get()));
+				player.inventory.add(new ItemStack(CursedRegistry.BASE_CHEST.get()));
 				playerData.putBoolean(baseChestTag, true);
 			}
 		}

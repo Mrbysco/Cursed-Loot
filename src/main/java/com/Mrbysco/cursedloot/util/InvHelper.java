@@ -18,13 +18,13 @@ public class InvHelper {
 
 	@Nullable
 	public static BaseChestInventory getChestInventory(PlayerEntity player, World worldIn) {
-		if(worldIn.isRemote || player instanceof FakePlayer) {
+		if(worldIn.isClientSide || player instanceof FakePlayer) {
 			return null;
 		} else {
 			if(player.getTeam() != null) {
 				return CursedWorldData.get(worldIn).getInventoryFromTeam(player.getTeam().getName());
 			} else {
-				return CursedWorldData.get(worldIn).getInventoryFromUUID(player.getUniqueID());
+				return CursedWorldData.get(worldIn).getInventoryFromUUID(player.getUUID());
 			}
 		}
 	}
@@ -175,7 +175,7 @@ public class InvHelper {
             int j = tagCompound.getByte("Slot") & 255;
 
             if (j < list.size()) {
-                list.set(j, ItemStack.read(tagCompound));
+                list.set(j, ItemStack.of(tagCompound));
             }
         }
     }

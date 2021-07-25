@@ -25,7 +25,7 @@ public class CursedWorldData extends WorldSavedData {
 	}
 
 	@Override
-	public void read(CompoundNBT nbt) {
+	public void load(CompoundNBT nbt) {
 		ListNBT baseChestsList = nbt.getList("baseChests", Constants.NBT.TAG_COMPOUND);
 		ListNBT teamChestsList = nbt.getList("teamChests", Constants.NBT.TAG_COMPOUND);
 
@@ -34,11 +34,11 @@ public class CursedWorldData extends WorldSavedData {
 
 		for (int i = 0; i < baseChestsList.size(); ++i) {
 			CompoundNBT tag = baseChestsList.getCompound(i);
-			UUID uuid = tag.getUniqueId("Owner");
+			UUID uuid = tag.getUUID("Owner");
 			int chestSize = tag.getInt("ChestSize");
 			ListNBT chestTag = tag.getList("BaseChest", 10);
 			BaseChestInventory inventory = new BaseChestInventory(chestSize);
-			inventory.read(chestTag);
+			inventory.fromTag(chestTag);
 
 			baseChestMap.put(uuid, inventory);
 		}
@@ -48,20 +48,20 @@ public class CursedWorldData extends WorldSavedData {
 			int chestSize = tag.getInt("ChestSize");
 			ListNBT chestTag = tag.getList("BaseChest", 10);
 			BaseChestInventory inventory = new BaseChestInventory(chestSize);
-			inventory.read(chestTag);
+			inventory.fromTag(chestTag);
 
 			teamChestMap.put(team, inventory);
 		}
 	}
 
 	@Override
-	public CompoundNBT write(CompoundNBT compound) {
+	public CompoundNBT save(CompoundNBT compound) {
 		ListNBT baseChestsList = new ListNBT();
 		for (Map.Entry<UUID, BaseChestInventory> entry : baseChestMap.entrySet()) {
 			CompoundNBT baseChestsTag = new CompoundNBT();
-			baseChestsTag.putUniqueId("Owner", entry.getKey());
-			baseChestsTag.putInt("ChestSize", entry.getValue().getSizeInventory());
-			baseChestsTag.put("BaseChest", entry.getValue().write());
+			baseChestsTag.putUUID("Owner", entry.getKey());
+			baseChestsTag.putInt("ChestSize", entry.getValue().getContainerSize());
+			baseChestsTag.put("BaseChest", entry.getValue().createTag());
 			baseChestsList.add(baseChestsTag);
 		}
 		compound.put("baseChests", baseChestsList);
@@ -69,8 +69,8 @@ public class CursedWorldData extends WorldSavedData {
 		for (Map.Entry<String, BaseChestInventory> entry : teamChestMap.entrySet()) {
 			CompoundNBT teamChestTag = new CompoundNBT();
 			teamChestTag.putString("Team", entry.getKey());
-			teamChestTag.putInt("ChestSize", entry.getValue().getSizeInventory());
-			teamChestTag.put("BaseChest", entry.getValue().write());
+			teamChestTag.putInt("ChestSize", entry.getValue().getContainerSize());
+			teamChestTag.put("BaseChest", entry.getValue().createTag());
 			teamChestsList.add(teamChestTag);
 		}
 		compound.put("teamChests", teamChestsList);
@@ -102,9 +102,9 @@ public class CursedWorldData extends WorldSavedData {
 		if (!(world instanceof ServerWorld)) {
 			throw new RuntimeException("Attempted to get the data from a client world. This is wrong.");
 		}
-		ServerWorld overworld = world.getServer().getWorld(World.OVERWORLD);
+		ServerWorld overworld = world.getServer().getLevel(World.OVERWORLD);
 
-		DimensionSavedDataManager storage = overworld.getSavedData();
-		return storage.getOrCreate(CursedWorldData::new, DATA_NAME);
+		DimensionSavedDataManager storage = overworld.getDataStorage();
+		return storage.computeIfAbsent(CursedWorldData::new, DATA_NAME);
 	}
 }

@@ -23,7 +23,7 @@ public class CurseHelper {
 	}
 
 	public static List<ItemStack> revealStacks(ItemStack hiddenStack, @Nonnull CompoundNBT tag) {
-		ItemStack revealedStack = ItemStack.read(tag.getCompound(CurseTags.HIDDEN_TAG));
+		ItemStack revealedStack = ItemStack.of(tag.getCompound(CurseTags.HIDDEN_TAG));
 		if (hiddenStack.getCount() > 1) {
 			int total = revealedStack.getCount() * hiddenStack.getCount();
 			int stackAmount = (int) Math.ceil((double) total / (double) revealedStack.getMaxStackSize());
@@ -65,11 +65,11 @@ public class CurseHelper {
 				tooltips.add(Reference.emptyComponent);
 				tooltips.add(Reference.emptyComponent);
 				tooltips.add(Reference.emptyComponent);
-				tooltips.add(new TranslationTextComponent(tag.getLowercaseCurseTag() + ".lore").mergeStyle(TextFormatting.YELLOW));
+				tooltips.add(new TranslationTextComponent(tag.getLowercaseCurseTag() + ".lore").withStyle(TextFormatting.YELLOW));
 				if(tag == CurseTags.HITS_BREAK_ITEM) {
 					if(compound.getInt(CurseTags.HITS_TAG) > 0) {
 						int hits = compound.getInt(CurseTags.HITS_TAG);
-						tooltips.add(new TranslationTextComponent(CurseTags.HITS_TAG.toLowerCase() + ".lore", hits).mergeStyle(TextFormatting.YELLOW));
+						tooltips.add(new TranslationTextComponent(CurseTags.HITS_TAG.toLowerCase() + ".lore", hits).withStyle(TextFormatting.YELLOW));
 					}
 				}
 			}

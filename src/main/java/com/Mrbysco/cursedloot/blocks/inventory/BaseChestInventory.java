@@ -19,30 +19,30 @@ public class BaseChestInventory extends Inventory {
 		this.associatedChest = chestTileEntity;
 	}
 
-	public void read(ListNBT p_70486_1_) {
-		for(int i = 0; i < this.getSizeInventory(); ++i) {
-			this.setInventorySlotContents(i, ItemStack.EMPTY);
+	public void fromTag(ListNBT p_70486_1_) {
+		for(int i = 0; i < this.getContainerSize(); ++i) {
+			this.setItem(i, ItemStack.EMPTY);
 		}
 
 		for(int k = 0; k < p_70486_1_.size(); ++k) {
 			CompoundNBT compoundnbt = p_70486_1_.getCompound(k);
 			int j = compoundnbt.getByte("Slot") & 255;
-			if (j >= 0 && j < this.getSizeInventory()) {
-				this.setInventorySlotContents(j, ItemStack.read(compoundnbt));
+			if (j >= 0 && j < this.getContainerSize()) {
+				this.setItem(j, ItemStack.of(compoundnbt));
 			}
 		}
 
 	}
 
-	public ListNBT write() {
+	public ListNBT createTag() {
 		ListNBT listnbt = new ListNBT();
 
-		for(int i = 0; i < this.getSizeInventory(); ++i) {
-			ItemStack itemstack = this.getStackInSlot(i);
+		for(int i = 0; i < this.getContainerSize(); ++i) {
+			ItemStack itemstack = this.getItem(i);
 			if (!itemstack.isEmpty()) {
 				CompoundNBT compoundnbt = new CompoundNBT();
 				compoundnbt.putByte("Slot", (byte)i);
-				itemstack.write(compoundnbt);
+				itemstack.save(compoundnbt);
 				listnbt.add(compoundnbt);
 			}
 		}
@@ -53,27 +53,27 @@ public class BaseChestInventory extends Inventory {
 	/**
 	 * Don't rename this method to canInteractWith due to conflicts with Container
 	 */
-	public boolean isUsableByPlayer(PlayerEntity player) {
-		return (this.associatedChest == null || this.associatedChest.canBeUsed(player)) && super.isUsableByPlayer(player);
+	public boolean stillValid(PlayerEntity player) {
+		return (this.associatedChest == null || this.associatedChest.canBeUsed(player)) && super.stillValid(player);
 	}
 
-	public void openInventory(PlayerEntity player) {
+	public void startOpen(PlayerEntity player) {
 		if (this.associatedChest != null) {
 			this.associatedChest.openChest();
 		}
 
-		super.openInventory(player);
+		super.startOpen(player);
 	}
 
-	public void closeInventory(PlayerEntity player) {
+	public void stopOpen(PlayerEntity player) {
 		if (this.associatedChest != null) {
 			this.associatedChest.closeChest();
 		}
 
 
-		super.closeInventory(player);
-		if(!player.world.isRemote) {
-			CursedWorldData.get(player.world).markDirty();
+		super.stopOpen(player);
+		if(!player.level.isClientSide) {
+			CursedWorldData.get(player.level).setDirty();
 		}
 		this.associatedChest = null;
 	}
@@ -84,7 +84,7 @@ public class BaseChestInventory extends Inventory {
 		}
 		int slot = getFirstEmptyStack();
 		if(slot >= 0) {
-			setInventorySlotContents(slot, stack.copy());
+			setItem(slot, stack.copy());
 			stack.setCount(0);
 			return true;
 		} else {
@@ -93,8 +93,8 @@ public class BaseChestInventory extends Inventory {
 	}
 
 	public int getFirstEmptyStack() {
-		for(int i = 0; i < this.getSizeInventory(); ++i) {
-			if (this.getStackInSlot(i).isEmpty()) {
+		for(int i = 0; i < this.getContainerSize(); ++i) {
+			if (this.getItem(i).isEmpty()) {
 				return i;
 			}
 		}

@@ -24,11 +24,11 @@ public class CursedRegistry {
 //    public static final RegistryObject<ContainerType<AltarContainer>> ALTAR_CONTAINER = CONTAINERS.register("leveling_altar",
 //            () -> IForgeContainerType.create((windowId, inv, data) -> new AltarContainer(windowId, inv)));
 
-    public static final RegistryObject<Block> BASE_CHEST = BLOCKS.register("base_chest", () -> new BaseChestBlock(Block.Properties.create(Material.WOOD)
-            .hardnessAndResistance(2.5F, 1000.0F).sound(SoundType.WOOD).notSolid()));
+    public static final RegistryObject<Block> BASE_CHEST = BLOCKS.register("base_chest", () -> new BaseChestBlock(Block.Properties.of(Material.WOOD)
+            .strength(2.5F, 1000.0F).sound(SoundType.WOOD).noOcclusion()));
     public static final RegistryObject<Item> BASE_CHEST_ITEM = ITEMS.register("base_chest", () -> new BlockItem(BASE_CHEST.get(), new Item.Properties().setISTER(() -> CurseISTERProvider.chest())));
 
     public static final RegistryObject<Item> HIDDEN_ITEM = ITEMS.register("hidden_item", () -> new HiddenItem(new Item.Properties()));
 
-    public static final RegistryObject<TileEntityType<BaseChestTile>> BASE_CHEST_TILE = TILE_ENTITIES.register("base_chest", () -> TileEntityType.Builder.create(BaseChestTile::new, CursedRegistry.BASE_CHEST.get()).build(null));
+    public static final RegistryObject<TileEntityType<BaseChestTile>> BASE_CHEST_TILE = TILE_ENTITIES.register("base_chest", () -> TileEntityType.Builder.of(BaseChestTile::new, CursedRegistry.BASE_CHEST.get()).build(null));
 }

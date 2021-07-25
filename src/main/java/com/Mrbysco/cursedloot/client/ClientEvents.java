@@ -41,8 +41,8 @@ public class ClientEvents {
         CompoundNBT tags = stack.hasTag() && stack.getTag() != null ? stack.getTag() : new CompoundNBT();
 
         if(!tags.isEmpty() && CurseHelper.hasCurse(tags)) {
-            FontRenderer fontRenderer = mc.fontRenderer;
-            int fontHeight = fontRenderer.FONT_HEIGHT + 1;
+            FontRenderer fontRenderer = mc.font;
+            int fontHeight = fontRenderer.lineHeight + 1;
 
             RenderSystem.enableBlend();
 
@@ -51,20 +51,20 @@ public class ClientEvents {
                 ResourceLocation icon = curseTextureInfo.getResource();
                 CursePos texturePos = curseTextureInfo.getPosition();
 
-                mc.getTextureManager().bindTexture(icon);
-                int middle = (fontRenderer.getStringWidth(stack.getDisplayName().getUnformattedComponentText()))/2;
+                mc.getTextureManager().bind(icon);
+                int middle = (fontRenderer.width(stack.getHoverName().getContents()))/2;
 
                 int posX = event.getX() + middle;
                 int posY = event.getY() + 14;
 
-                List<ITextComponent> tooltips = stack.getTooltip((PlayerEntity) null, TooltipFlags.ADVANCED);
+                List<ITextComponent> tooltips = stack.getTooltipLines((PlayerEntity) null, TooltipFlags.ADVANCED);
                 if(!tooltips.isEmpty()) {
                     for(int i = 0; i < tooltips.size(); i++) {
                         ITextComponent component = tooltips.get(i);
                         if(component.equals(Reference.emptyComponent)) {
                             int location = i - 1;
                             posY = event.getY() + (fontHeight * location);
-                            if(mc.gameSettings.advancedItemTooltips) {
+                            if(mc.options.advancedItemTooltips) {
                                 posY += (int)(fontHeight * 1.5);
                             } else {
                                 posY -= 4;

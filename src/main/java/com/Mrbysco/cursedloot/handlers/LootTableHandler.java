@@ -19,15 +19,15 @@ public class LootTableHandler {
     public void onLootTableLoad(PlayerInteractEvent.RightClickBlock event) {
 		World world = event.getWorld();
 		BlockPos pos = event.getPos();
-		if(!world.isRemote && event.getHand() == Hand.MAIN_HAND) {
-			TileEntity te = world.getTileEntity(pos);
+		if(!world.isClientSide && event.getHand() == Hand.MAIN_HAND) {
+			TileEntity te = world.getBlockEntity(pos);
 			if(te instanceof LockableLootTileEntity) {
 				LockableLootTileEntity chest = (LockableLootTileEntity)te;
 				if(chest.lootTable != null) {
-					for(int i = 0; i < chest.getSizeInventory(); i++) {
-						ItemStack stack = chest.getStackInSlot(i);
+					for(int i = 0; i < chest.getContainerSize(); i++) {
+						ItemStack stack = chest.getItem(i);
 						if(!stack.isEmpty()) {
-							if(world.rand.nextInt(100) < 75) {
+							if(world.random.nextInt(100) < 75) {
 								CompoundNBT tag = new CompoundNBT();
 
 								CurseTags curseTag = CurseHelper.getRandomTag();
@@ -36,11 +36,11 @@ public class LootTableHandler {
 										ItemStack hiddenStack = new ItemStack(CursedRegistry.HIDDEN_ITEM.get());
 
 										CompoundNBT hiddenTag = new CompoundNBT();
-										hiddenTag.put(CurseTags.HIDDEN_TAG, stack.write(new CompoundNBT()));
+										hiddenTag.put(CurseTags.HIDDEN_TAG, stack.save(new CompoundNBT()));
 										hiddenTag.putBoolean(curseTag.getCurseTag(), true);
 
 										hiddenStack.setTag(hiddenTag);
-										chest.setInventorySlotContents(i, hiddenStack);
+										chest.setItem(i, hiddenStack);
 									} else {
 										tag.putBoolean(curseTag.getCurseTag(), true);
 
@@ -54,7 +54,7 @@ public class LootTableHandler {
 										}
 										tag.putBoolean("cursedLoot", true);
 										stack.setTag(tag);
-										chest.setInventorySlotContents(i, stack);
+										chest.setItem(i, stack);
 									}
 								}
 							}

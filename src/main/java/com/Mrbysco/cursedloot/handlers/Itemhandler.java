@@ -34,12 +34,12 @@ public class ItemHandler {
 			PlayerInventory inv = player.inventory;
 			
 			if(tag.getBoolean(CurseTags.LEFT_OR_RIGHT.getCurseTag())) {
-				if(InvHelper.getFirstEmptySideStack(inv.mainInventory) == -1) {
+				if(InvHelper.getFirstEmptySideStack(inv.items) == -1) {
 					event.setCanceled(true);
 				}
 			}
 			if(tag.getBoolean(CurseTags.TOP_OR_BOTTOM.getCurseTag())) {
-				if(InvHelper.getFirstEmptyTopStack(inv.mainInventory) == -1) {
+				if(InvHelper.getFirstEmptyTopStack(inv.items) == -1) {
 					event.setCanceled(true);
 				}
 			}
@@ -50,28 +50,28 @@ public class ItemHandler {
 	public void inventoryEvent(TickEvent.PlayerTickEvent event) {
 		if (event.phase.equals(TickEvent.Phase.START) && event.side.isServer()) {
 			PlayerEntity player = event.player;
-			World world = player.world;
+			World world = player.level;
 
 			PlayerInventory inv = player.inventory;
-			for(int i = 0; i < inv.mainInventory.size(); i++) {
-				if(!inv.getStackInSlot(i).isEmpty()) {
-					ItemStack stack = inv.getStackInSlot(i);
+			for(int i = 0; i < inv.items.size(); i++) {
+				if(!inv.getItem(i).isEmpty()) {
+					ItemStack stack = inv.getItem(i);
 					if(stack.hasTag() && stack.getTag() != null) {
 						CompoundNBT tag = stack.getTag();
 						//TopOrBottomTag
 						if(tag.getBoolean(CurseTags.TOP_OR_BOTTOM.getCurseTag())) {
 							if(!InvHelper.isTop(i)) {
-								ItemStack notTopStack = inv.getStackInSlot(i);
-								player.dropItem(notTopStack, false);
-								inv.setInventorySlotContents(i, ItemStack.EMPTY);
+								ItemStack notTopStack = inv.getItem(i);
+								player.drop(notTopStack, false);
+								inv.setItem(i, ItemStack.EMPTY);
 							}
 						}
 						//LeftOrRightTag
 						if(tag.getBoolean(CurseTags.LEFT_OR_RIGHT.getCurseTag())) {
-							if(!InvHelper.isSide(inv.mainInventory.size(), i)) {
-								ItemStack notSideStack = inv.getStackInSlot(i);
-								player.dropItem(notSideStack, false);
-								inv.setInventorySlotContents(i, ItemStack.EMPTY);
+							if(!InvHelper.isSide(inv.items.size(), i)) {
+								ItemStack notSideStack = inv.getItem(i);
+								player.drop(notSideStack, false);
+								inv.setItem(i, ItemStack.EMPTY);
 							}
 						}
 						//DestroyTag
@@ -82,11 +82,11 @@ public class ItemHandler {
 								ItemStack stack2 = stack.copy();
 
 								stack2.setTag(tag2);
-								inv.setInventorySlotContents(i, stack2);
+								inv.setItem(i, stack2);
 							} else {
 								int directionalSlot = InvHelper.getDirectionalSlotNumber(stack, i);
 								if(directionalSlot != -1) {
-									ItemStack directionalStack = inv.getStackInSlot(directionalSlot);
+									ItemStack directionalStack = inv.getItem(directionalSlot);
 									if(directionalStack.hasTag() && directionalStack.getTag() != null) {
 										CompoundNBT dirTag = directionalStack.getTag();
 										if(CurseHelper.hasCurse(dirTag)) {
@@ -95,10 +95,10 @@ public class ItemHandler {
 												if(!revealedStacks.isEmpty()) {
 													for(int s = 0; s < revealedStacks.size(); s++) {
 														if(s == 0) {
-															inv.setInventorySlotContents(directionalSlot, revealedStacks.get(s));
+															inv.setItem(directionalSlot, revealedStacks.get(s));
 														} else {
-															if(!inv.addItemStackToInventory(revealedStacks.get(s))) {
-																player.dropItem(revealedStacks.get(s), false);
+															if(!inv.add(revealedStacks.get(s))) {
+																player.drop(revealedStacks.get(s), false);
 															}
 														}
 													}
@@ -124,11 +124,11 @@ public class ItemHandler {
 								ItemStack stack2 = stack.copy();
 
 								stack2.setTag(tag2);
-								inv.setInventorySlotContents(i, stack2);
+								inv.setItem(i, stack2);
 							} else {
 								int directionalSlot = InvHelper.getDirectionalSlotNumber(stack, i);
 								if(directionalSlot != -1) {
-									ItemStack directionalStack = inv.getStackInSlot(directionalSlot);
+									ItemStack directionalStack = inv.getItem(directionalSlot);
 									if(!directionalStack.isEmpty()) {
 										BaseChestInventory inventory = InvHelper.getChestInventory(player, world);
 										if(directionalStack.hasTag() && directionalStack.getTag() != null) {
@@ -155,7 +155,7 @@ public class ItemHandler {
 										directionalStack.setCount(0);
 
 										tag.putBoolean(CurseTags.USED_TO_SHOP_TAG, true);
-										CursedWorldData.get(world).markDirty();
+										CursedWorldData.get(world).setDirty();
 									}
 								}
 							}
@@ -174,21 +174,21 @@ public class ItemHandler {
 
 			if(event.getSource() != null) {
 				PlayerInventory inv = player.inventory;
-				for(int i = 0; i < inv.mainInventory.size(); i++) {
-					if(!inv.getStackInSlot(i).isEmpty()) {
-						ItemStack stack = inv.getStackInSlot(i);
+				for(int i = 0; i < inv.items.size(); i++) {
+					if(!inv.getItem(i).isEmpty()) {
+						ItemStack stack = inv.getItem(i);
 						if(stack.hasTag() && stack.getTag() != null) {
 							CompoundNBT tag = stack.getTag();
 							if(tag.getBoolean(CurseTags.HITS_BREAK_ITEM.getCurseTag())) {
 								int hits = tag.getInt(CurseTags.HITS_TAG);
 								if(hits > 5) {
-									player.sendStatusMessage(new TranslationTextComponent("cursedloot:hits.broken.item").appendSibling(stack.getDisplayName()), true);
-									inv.setInventorySlotContents(i, ItemStack.EMPTY);
+									player.displayClientMessage(new TranslationTextComponent("cursedloot:hits.broken.item").append(stack.getHoverName()), true);
+									inv.setItem(i, ItemStack.EMPTY);
 								} else {
 									tag.putInt(CurseTags.HITS_TAG, hits + 1);
 									stack.setTag(tag);
 									
-									inv.setInventorySlotContents(i, stack);
+									inv.setItem(i, stack);
 								}
 							}
 						}

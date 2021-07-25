@@ -49,14 +49,14 @@ public class BaseChestTile extends TileEntity implements IChestLid, ITickableTil
     public void tick() {
         ++this.ticksSinceSync;
         this.prevLidAngle = this.lidAngle;
-        int i = this.pos.getX();
-        int j = this.pos.getY();
-        int k = this.pos.getZ();
+        int i = this.worldPosition.getX();
+        int j = this.worldPosition.getY();
+        int k = this.worldPosition.getZ();
         float f = 0.1F;
         if (this.numPlayersUsing > 0 && this.lidAngle == 0.0F) {
             double d0 = (double)i + 0.5D;
             double d1 = (double)k + 0.5D;
-            this.world.playSound((PlayerEntity)null, d0, (double)j + 0.5D, d1, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, this.world.rand.nextFloat() * 0.1F + 0.9F);
+            this.level.playSound((PlayerEntity)null, d0, (double)j + 0.5D, d1, SoundEvents.CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, this.level.random.nextFloat() * 0.1F + 0.9F);
         }
 
         if (this.numPlayersUsing == 0 && this.lidAngle > 0.0F || this.numPlayersUsing > 0 && this.lidAngle < 1.0F) {
@@ -75,7 +75,7 @@ public class BaseChestTile extends TileEntity implements IChestLid, ITickableTil
             if (this.lidAngle < f1 && f2 >= f1) {
                 double d3 = (double)i + 0.5D;
                 double d2 = (double)k + 0.5D;
-                this.world.playSound((PlayerEntity)null, d3, (double)j + 0.5D, d2, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, this.world.rand.nextFloat() * 0.1F + 0.9F);
+                this.level.playSound((PlayerEntity)null, d3, (double)j + 0.5D, d2, SoundEvents.CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, this.level.random.nextFloat() * 0.1F + 0.9F);
             }
 
             if (this.lidAngle < 0.0F) {
@@ -86,14 +86,14 @@ public class BaseChestTile extends TileEntity implements IChestLid, ITickableTil
     }
 
     public void checkForPlayer() {
-        if(!world.isRemote && world.getGameTime() % 20 == 0) {
-            List<PlayerEntity> players = new ArrayList<>(world.getPlayers());
-            players.removeIf((playerEntity -> getPos().distanceSq(playerEntity.getPosition()) > 100));
+        if(!level.isClientSide && level.getGameTime() % 20 == 0) {
+            List<PlayerEntity> players = new ArrayList<>(level.players());
+            players.removeIf((playerEntity -> getBlockPos().distSqr(playerEntity.blockPosition()) > 100));
             for(PlayerEntity player : players) {
                 PlayerInventory inv = player.inventory;
-                for(int i = 0; i < inv.mainInventory.size(); i++) {
-                    if(!inv.getStackInSlot(i).isEmpty()) {
-                        ItemStack stack = inv.getStackInSlot(i);
+                for(int i = 0; i < inv.items.size(); i++) {
+                    if(!inv.getItem(i).isEmpty()) {
+                        ItemStack stack = inv.getItem(i);
                         if(stack.hasTag() && stack.getTag() != null) {
                             CompoundNBT tag = stack.getTag();
                             if(tag.getBoolean(CurseTags.REMAIN_HIDDEN.getCurseTag())) {
@@ -102,10 +102,10 @@ public class BaseChestTile extends TileEntity implements IChestLid, ITickableTil
                                     if (!revealedStacks.isEmpty()) {
                                         for (int s = 0; s < revealedStacks.size(); s++) {
                                             if (s == 0) {
-                                                inv.setInventorySlotContents(i, revealedStacks.get(s));
+                                                inv.setItem(i, revealedStacks.get(s));
                                             } else {
-                                                if (!inv.addItemStackToInventory(revealedStacks.get(s))) {
-                                                    player.dropItem(revealedStacks.get(s), false);
+                                                if (!inv.add(revealedStacks.get(s))) {
+                                                    player.drop(revealedStacks.get(s), false);
                                                 }
                                             }
                                         }
@@ -115,14 +115,14 @@ public class BaseChestTile extends TileEntity implements IChestLid, ITickableTil
                             if(tag.getBoolean(CurseTags.DESTROY_ITEM.getCurseTag())) {
                                 int directionalSlot = InvHelper.getDirectionalSlotNumber(stack, i);
                                 if(directionalSlot != -1) {
-                                    inv.setInventorySlotContents(directionalSlot, ItemStack.EMPTY);
+                                    inv.setItem(directionalSlot, ItemStack.EMPTY);
                                 }
 
                                 ItemStack stack2 = stack.copy();
                                 CompoundNBT tag2 = CurseHelper.removeCurse(stack2.getTag());
                                 stack2.setTag(tag2);
 
-                                inv.setInventorySlotContents(i, stack2);
+                                inv.setItem(i, stack2);
                             }
                             if(tag.getBoolean(CurseTags.ITEM_BECOMES_THIS.getCurseTag())) {
                                 int directionalSlot = InvHelper.getDirectionalSlotNumber(stack, i);
@@ -133,15 +133,15 @@ public class BaseChestTile extends TileEntity implements IChestLid, ITickableTil
                                 if(directionalSlot != -1) {
                                     ItemStack stack3 = stack2.copy();
                                     if(stack2.getCount() > 4) {
-                                        int newCount = world.rand.nextInt(4);
+                                        int newCount = level.random.nextInt(4);
                                         if(newCount == 0) {
                                             newCount = 1;
                                         }
                                         stack3.setCount(newCount);
                                     }
-                                    inv.setInventorySlotContents(directionalSlot, stack3);
+                                    inv.setItem(directionalSlot, stack3);
                                 }
-                                inv.setInventorySlotContents(i, stack2);
+                                inv.setItem(i, stack2);
                             }
                         }
                     }
@@ -150,40 +150,40 @@ public class BaseChestTile extends TileEntity implements IChestLid, ITickableTil
         }
     }
 
-    public boolean receiveClientEvent(int id, int type) {
+    public boolean triggerEvent(int id, int type) {
         if (id == 1) {
             this.numPlayersUsing = type;
             return true;
         } else {
-            return super.receiveClientEvent(id, type);
+            return super.triggerEvent(id, type);
         }
     }
 
-    public void remove() {
-        this.updateContainingBlockInfo();
-        super.remove();
+    public void setRemoved() {
+        this.clearCache();
+        super.setRemoved();
     }
 
     public void openChest() {
         ++this.numPlayersUsing;
-        this.world.addBlockEvent(this.pos, CursedRegistry.BASE_CHEST.get(), 1, this.numPlayersUsing);
+        this.level.blockEvent(this.worldPosition, CursedRegistry.BASE_CHEST.get(), 1, this.numPlayersUsing);
     }
 
     public void closeChest() {
         --this.numPlayersUsing;
-        this.world.addBlockEvent(this.pos, CursedRegistry.BASE_CHEST.get(), 1, this.numPlayersUsing);
+        this.level.blockEvent(this.worldPosition, CursedRegistry.BASE_CHEST.get(), 1, this.numPlayersUsing);
     }
 
     public boolean canBeUsed(PlayerEntity player) {
-        if (this.world.getTileEntity(this.pos) != this) {
+        if (this.level.getBlockEntity(this.worldPosition) != this) {
             return false;
         } else {
-            return !(player.getDistanceSq((double)this.pos.getX() + 0.5D, (double)this.pos.getY() + 0.5D, (double)this.pos.getZ() + 0.5D) > 64.0D);
+            return !(player.distanceToSqr((double)this.worldPosition.getX() + 0.5D, (double)this.worldPosition.getY() + 0.5D, (double)this.worldPosition.getZ() + 0.5D) > 64.0D);
         }
     }
 
     @OnlyIn(Dist.CLIENT)
-    public float getLidAngle(float partialTicks) {
+    public float getOpenNess(float partialTicks) {
         return MathHelper.lerp(partialTicks, this.prevLidAngle, this.lidAngle);
     }
 }

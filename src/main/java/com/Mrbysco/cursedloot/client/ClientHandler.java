@@ -15,7 +15,7 @@ public class ClientHandler {
 
     public static final ResourceLocation BASE_CHEST_LOCATION = new ResourceLocation(Reference.MOD_ID, "entity/base_chest");
     public static void preStitchEvent(TextureStitchEvent.Pre event) {
-        if(event.getMap().getTextureLocation().toString().equals("minecraft:textures/atlas/chest.png")) {
+        if(event.getMap().location().toString().equals("minecraft:textures/atlas/chest.png")) {
             event.addSprite(BASE_CHEST_LOCATION);
         }
     }
