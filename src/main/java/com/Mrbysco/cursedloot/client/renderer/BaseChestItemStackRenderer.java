@@ -16,31 +16,23 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class BaseChestItemStackRenderer extends BlockEntityWithoutLevelRenderer{
 	private BaseChestBlockEntity baseChest = null;
+	private BlockEntityRenderDispatcher blockEntityRenderDispatcher = null;
 
 	public BaseChestItemStackRenderer() {
 		super(null, null);
-		Minecraft minecraft = Minecraft.getInstance();
-		if(minecraft != null) {
-			ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
-			if (resourceManager instanceof ReloadableResourceManager) {
-				((ReloadableResourceManager) resourceManager).registerReloadListener(this);
-			}
-		}
-	}
-
-	@Override
-	public void onResourceManagerReload(ResourceManager manager) {
-		this.baseChest = new BaseChestBlockEntity(BlockPos.ZERO, CursedRegistry.BASE_CHEST.get().defaultBlockState());
 	}
 
 	@Override
 	public void renderByItem(ItemStack itemStackIn, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLightIn, int combinedOverlayIn) {
-		if(baseChest != null) {
+		if(baseChest == null) {
+			this.baseChest = new BaseChestBlockEntity(BlockPos.ZERO, CursedRegistry.BASE_CHEST.get().defaultBlockState());
+		}
+		if(blockEntityRenderDispatcher == null) {
 			final Minecraft minecraft = Minecraft.getInstance();
-			BlockEntityRenderDispatcher blockEntityRenderDispatcher = minecraft.getBlockEntityRenderDispatcher();
-			if(blockEntityRenderDispatcher != null) {
-				blockEntityRenderDispatcher.renderItem((BlockEntity)baseChest, poseStack, bufferSource, combinedLightIn, combinedOverlayIn);
-			}
+			blockEntityRenderDispatcher = minecraft.getBlockEntityRenderDispatcher();
+		}
+		if(blockEntityRenderDispatcher != null) {
+			blockEntityRenderDispatcher.renderItem((BlockEntity)baseChest, poseStack, bufferSource, combinedLightIn, combinedOverlayIn);
 		}
 	}
 }
