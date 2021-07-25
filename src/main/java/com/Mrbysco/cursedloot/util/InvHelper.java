@@ -89,7 +89,7 @@ public class InvHelper {
 	public static int getDirectionalSlotNumber(ItemStack currentStack, int currentSlot) {
 		CompoundTag tag = currentStack.getTag();
 		if(tag != null) {
-			if(tag.getBoolean(Reference.PREFIX + "north")) {
+			if(tag.getBoolean(Reference.MOD_PREFIX + "north")) {
 				if(currentSlot >= 9 && currentSlot <= 17) {
 					return -1;
 				} else {
@@ -99,7 +99,7 @@ public class InvHelper {
 						return currentSlot - 9;
 					}
 				}
-			} else if(tag.getBoolean(Reference.PREFIX + "northeast")) {
+			} else if(tag.getBoolean(Reference.MOD_PREFIX + "northeast")) {
 				if(currentSlot >= 9 && currentSlot <= 17 && currentSlot != 17) {
 					return -1;
 				} else {
@@ -109,13 +109,13 @@ public class InvHelper {
 						return currentSlot - 8;
 					}
 				}
-			} else if(tag.getBoolean(Reference.PREFIX + "east")) {
+			} else if(tag.getBoolean(Reference.MOD_PREFIX + "east")) {
 				if(currentSlot != 8 && currentSlot != 17 && currentSlot != 26 && currentSlot != 35) {
 					return currentSlot + 1;
 				} else {
 					return -1;
 				}
-			} else if(tag.getBoolean(Reference.PREFIX + "southeast")) {
+			} else if(tag.getBoolean(Reference.MOD_PREFIX + "southeast")) {
 				if(currentSlot <= 8) {
 					return -1;
 				} else {
@@ -125,7 +125,7 @@ public class InvHelper {
 						return currentSlot + 10;
 					}
 				}
-			} else if(tag.getBoolean(Reference.PREFIX + "south")) {
+			} else if(tag.getBoolean(Reference.MOD_PREFIX + "south")) {
 				if(currentSlot <= 8) {
 					return -1;
 				} else {
@@ -135,7 +135,7 @@ public class InvHelper {
 						return currentSlot + 9;
 					}
 				}
-			} else if(tag.getBoolean(Reference.PREFIX + "southwest")) {
+			} else if(tag.getBoolean(Reference.MOD_PREFIX + "southwest")) {
 				if(currentSlot <= 8) {
 					return -1;
 				} else {
@@ -145,13 +145,13 @@ public class InvHelper {
 						return currentSlot + 8;
 					}
 				}
-			} else if(tag.getBoolean(Reference.PREFIX + "west")) {
+			} else if(tag.getBoolean(Reference.MOD_PREFIX + "west")) {
 				if(currentSlot != 0 && currentSlot != 9 && currentSlot != 18 && currentSlot != 27) {
 					return currentSlot - 1;
 				} else {
 					return -1;
 				}
-			} else if(tag.getBoolean(Reference.PREFIX + "northwest")) {
+			} else if(tag.getBoolean(Reference.MOD_PREFIX + "northwest")) {
 				if(currentSlot >= 9 && currentSlot <= 17 && currentSlot != 9) {
 					return -1;
 				} else {

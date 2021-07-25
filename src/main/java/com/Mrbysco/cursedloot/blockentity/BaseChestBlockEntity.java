@@ -51,16 +51,16 @@ public class BaseChestBlockEntity extends BlockEntity implements LidBlockEntity 
     };
     private final ChestLidController chestLidController = new ChestLidController();
 
-    protected BaseChestBlockEntity(BlockEntityType<?> entityType, BlockPos pos, BlockState state) {
-        super(entityType, pos, state);
+    public BaseChestBlockEntity(BlockPos pos, BlockState state) {
+        this(CursedRegistry.BASE_CHEST_BLOCK_ENTITY.get(), pos, state);
     }
 
-    public BaseChestBlockEntity(BlockPos pos, BlockState state) {
-        this(CursedRegistry.BASE_CHEST_TILE.get(), pos, state);
+    public BaseChestBlockEntity(BlockEntityType<?> tileType, BlockPos pos, BlockState state) {
+        super(tileType, pos, state);
     }
 
     public Component getDefaultName() {
-        return new TranslatableComponent(Reference.MOD_ID + ":container.base_chest");
+        return new TranslatableComponent(Reference.MOD_PREFIX + "container.base_chest");
     }
 
     public static void lidAnimateTick(Level level, BlockPos pos, BlockState state, BaseChestBlockEntity blockEntity) {

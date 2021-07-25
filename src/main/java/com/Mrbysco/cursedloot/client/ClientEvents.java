@@ -8,6 +8,7 @@ import com.mrbysco.cursedloot.util.info.CurseLocation;
 import com.mrbysco.cursedloot.util.info.CursePos;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -53,7 +54,10 @@ public class ClientEvents {
                 ResourceLocation icon = curseTextureInfo.getResource();
                 CursePos texturePos = curseTextureInfo.getPosition();
 
-                mc.getTextureManager().bindForSetup(icon);
+                RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+                RenderSystem.setShaderTexture(0, icon);
+
                 int middle = (fontRenderer.width(stack.getHoverName().getContents()))/2;
 
                 int posX = event.getX() + middle;

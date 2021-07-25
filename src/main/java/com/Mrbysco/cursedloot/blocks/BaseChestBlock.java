@@ -1,8 +1,8 @@
 package com.mrbysco.cursedloot.blocks;
 
+import com.mrbysco.cursedloot.blockentity.BaseChestBlockEntity;
 import com.mrbysco.cursedloot.blocks.inventory.BaseChestInventory;
 import com.mrbysco.cursedloot.init.CursedRegistry;
-import com.mrbysco.cursedloot.blockentity.BaseChestBlockEntity;
 import com.mrbysco.cursedloot.util.InvHelper;
 import it.unimi.dsi.fastutil.floats.Float2FloatFunction;
 import net.minecraft.core.BlockPos;
@@ -55,10 +55,10 @@ public class BaseChestBlock extends AbstractChestBlock<BaseChestBlockEntity> imp
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     protected static final VoxelShape SHAPE = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
-    private final Supplier<BlockEntityType<? extends BaseChestBlockEntity>> tileEntityTypeSupplier = () -> CursedRegistry.BASE_CHEST_TILE.get();
+    private final Supplier<BlockEntityType<? extends BaseChestBlockEntity>> tileEntityTypeSupplier = () -> CursedRegistry.BASE_CHEST_BLOCK_ENTITY.get();
 
     public BaseChestBlock(BlockBehaviour.Properties builder) {
-        super(builder, () -> CursedRegistry.BASE_CHEST_TILE.get());
+        super(builder, () -> CursedRegistry.BASE_CHEST_BLOCK_ENTITY.get());
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, Boolean.valueOf(false)));
     }
 

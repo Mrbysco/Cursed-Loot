@@ -169,9 +169,7 @@ public class ItemHandler {
 	
 	@SubscribeEvent
 	public void damageEvent(LivingHurtEvent event) {
-		if(event.getEntityLiving() instanceof Player) {
-			Player player = (Player)event.getEntityLiving();
-
+		if(event.getEntityLiving() instanceof Player player) {
 			if(event.getSource() != null) {
 				Inventory inv = player.getInventory();
 				for(int i = 0; i < inv.items.size(); i++) {

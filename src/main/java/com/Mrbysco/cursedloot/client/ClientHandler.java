@@ -16,7 +16,7 @@ public class ClientHandler {
     public static void onClientSetup(FMLClientSetupEvent event) {
         RenderingRegistry.registerLayerDefinition(BASE_CHEST, () -> BaseChestRenderer.createSingleBodyLayer());
 
-        BlockEntityRenderers.register(CursedRegistry.BASE_CHEST_TILE.get(), BaseChestRenderer::new);
+        BlockEntityRenderers.register(CursedRegistry.BASE_CHEST_BLOCK_ENTITY.get(), BaseChestRenderer::new);
     }
 
     public static final ResourceLocation BASE_CHEST_LOCATION = new ResourceLocation(Reference.MOD_ID, "entity/base_chest");

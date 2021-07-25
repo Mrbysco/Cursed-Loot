@@ -13,11 +13,11 @@ public enum CurseTags {
     ITEM_TO_SHOP(6, "itemToShop", "item_to_shop", true),
     HITS_BREAK_ITEM(7, "hitsBreaksItem", "hits_breaks_item");
 
-    public static final String used_destroy_curse = Reference.PREFIX + "used_destroyCurse";
-    public static final String HIDDEN_TAG = Reference.PREFIX + "hiddenItem";
-    public static final String USED_TO_SHOP_TAG = Reference.PREFIX + "usedToShop";
-    public static final String HITS_TAG = Reference.PREFIX + "hitsTaken";
-    public static final String broken_item = Reference.PREFIX + "broken";
+    public static final String used_destroy_curse = Reference.MOD_PREFIX + "used_destroyCurse";
+    public static final String HIDDEN_TAG = Reference.MOD_PREFIX + "hiddenItem";
+    public static final String USED_TO_SHOP_TAG = Reference.MOD_PREFIX + "usedToShop";
+    public static final String HITS_TAG = Reference.MOD_PREFIX + "hitsTaken";
+    public static final String broken_item = Reference.MOD_PREFIX + "broken";
 
     private final int curseID;
     private final String curseTag;
@@ -26,14 +26,14 @@ public enum CurseTags {
 
     CurseTags(int curseId, String name, String textureLocation) {
         this.curseID = curseId;
-        this.curseTag = Reference.PREFIX + name;
+        this.curseTag = Reference.MOD_PREFIX + name;
         this.textureLocation = new ResourceLocation(Reference.MOD_ID, "textures/gui/" + textureLocation + ".png");
         this.directional = false;
     }
 
     CurseTags(int curseId, String name, String textureLocation, boolean directional) {
         this.curseID = curseId;
-        this.curseTag = Reference.PREFIX + name;
+        this.curseTag = Reference.MOD_PREFIX + name;
         this.textureLocation = new ResourceLocation(Reference.MOD_ID, "textures/gui/" + textureLocation + ".png");
         this.directional = directional;
     }

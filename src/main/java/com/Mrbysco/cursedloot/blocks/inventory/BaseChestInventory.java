@@ -1,7 +1,7 @@
 package com.mrbysco.cursedloot.blocks.inventory;
 
-import com.mrbysco.cursedloot.init.CursedWorldData;
 import com.mrbysco.cursedloot.blockentity.BaseChestBlockEntity;
+import com.mrbysco.cursedloot.init.CursedWorldData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.SimpleContainer;

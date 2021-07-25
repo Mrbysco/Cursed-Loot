@@ -1,11 +1,10 @@
 package com.mrbysco.cursedloot.init;
 
 import com.mrbysco.cursedloot.Reference;
+import com.mrbysco.cursedloot.blockentity.BaseChestBlockEntity;
 import com.mrbysco.cursedloot.blocks.BaseChestBlock;
 import com.mrbysco.cursedloot.item.BaseChestBlockItem;
 import com.mrbysco.cursedloot.item.HiddenItem;
-import com.mrbysco.cursedloot.blockentity.BaseChestBlockEntity;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -19,7 +18,6 @@ public class CursedRegistry {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Reference.MOD_ID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MOD_ID);
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, Reference.MOD_ID);
-    public static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, Reference.MOD_ID);
 
     public static final RegistryObject<Block> BASE_CHEST = BLOCKS.register("base_chest", () -> new BaseChestBlock(Block.Properties.of(Material.WOOD)
             .strength(2.5F, 1000.0F).sound(SoundType.WOOD).noOcclusion()));
@@ -27,5 +25,5 @@ public class CursedRegistry {
 
     public static final RegistryObject<Item> HIDDEN_ITEM = ITEMS.register("hidden_item", () -> new HiddenItem(new Item.Properties()));
 
-    public static final RegistryObject<BlockEntityType<BaseChestBlockEntity>> BASE_CHEST_TILE = BLOCK_ENTITIES.register("base_chest", () -> BlockEntityType.Builder.of(BaseChestBlockEntity::new, CursedRegistry.BASE_CHEST.get()).build(null));
+    public static final RegistryObject<BlockEntityType<BaseChestBlockEntity>> BASE_CHEST_BLOCK_ENTITY = BLOCK_ENTITIES.register("base_chest", () -> BlockEntityType.Builder.of(BaseChestBlockEntity::new, CursedRegistry.BASE_CHEST.get()).build(null));
 }

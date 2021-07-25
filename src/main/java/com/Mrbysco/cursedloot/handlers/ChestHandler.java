@@ -10,7 +10,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class ChestHandler {	
 	
-	public static final String baseChestTag = Reference.PREFIX + "gotBaseChest";
+	public static final String baseChestTag = Reference.MOD_PREFIX + "gotBaseChest";
 	
 	@SubscribeEvent
 	public void firstJoin(PlayerLoggedInEvent event) {
