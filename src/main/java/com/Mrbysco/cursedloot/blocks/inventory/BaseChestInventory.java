@@ -1,73 +1,73 @@
 package com.mrbysco.cursedloot.blocks.inventory;
 
 import com.mrbysco.cursedloot.init.CursedWorldData;
-import com.mrbysco.cursedloot.tileentity.BaseChestTile;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
+import com.mrbysco.cursedloot.blockentity.BaseChestBlockEntity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
-public class BaseChestInventory extends Inventory {
-	private BaseChestTile associatedChest;
+public class BaseChestInventory extends SimpleContainer {
+	private BaseChestBlockEntity associatedChest;
 
 	public BaseChestInventory(int slots) {
 		super(slots);
 	}
 
-	public void setChestTileEntity(BaseChestTile chestTileEntity) {
+	public void setChestTileEntity(BaseChestBlockEntity chestTileEntity) {
 		this.associatedChest = chestTileEntity;
 	}
 
-	public void fromTag(ListNBT p_70486_1_) {
+	public void fromTag(ListTag listTag) {
 		for(int i = 0; i < this.getContainerSize(); ++i) {
 			this.setItem(i, ItemStack.EMPTY);
 		}
 
-		for(int k = 0; k < p_70486_1_.size(); ++k) {
-			CompoundNBT compoundnbt = p_70486_1_.getCompound(k);
-			int j = compoundnbt.getByte("Slot") & 255;
+		for(int k = 0; k < listTag.size(); ++k) {
+			CompoundTag compoundTag = listTag.getCompound(k);
+			int j = compoundTag.getByte("Slot") & 255;
 			if (j >= 0 && j < this.getContainerSize()) {
-				this.setItem(j, ItemStack.of(compoundnbt));
+				this.setItem(j, ItemStack.of(compoundTag));
 			}
 		}
 
 	}
 
-	public ListNBT createTag() {
-		ListNBT listnbt = new ListNBT();
+	public ListTag createTag() {
+		ListTag listTag = new ListTag();
 
 		for(int i = 0; i < this.getContainerSize(); ++i) {
 			ItemStack itemstack = this.getItem(i);
 			if (!itemstack.isEmpty()) {
-				CompoundNBT compoundnbt = new CompoundNBT();
-				compoundnbt.putByte("Slot", (byte)i);
-				itemstack.save(compoundnbt);
-				listnbt.add(compoundnbt);
+				CompoundTag compoundTag = new CompoundTag();
+				compoundTag.putByte("Slot", (byte)i);
+				itemstack.save(compoundTag);
+				listTag.add(compoundTag);
 			}
 		}
 
-		return listnbt;
+		return listTag;
 	}
 
 	/**
 	 * Don't rename this method to canInteractWith due to conflicts with Container
 	 */
-	public boolean stillValid(PlayerEntity player) {
+	public boolean stillValid(Player player) {
 		return (this.associatedChest == null || this.associatedChest.canBeUsed(player)) && super.stillValid(player);
 	}
 
-	public void startOpen(PlayerEntity player) {
+	public void startOpen(Player player) {
 		if (this.associatedChest != null) {
-			this.associatedChest.openChest();
+			this.associatedChest.startOpen(player);
 		}
 
 		super.startOpen(player);
 	}
 
-	public void stopOpen(PlayerEntity player) {
+	public void stopOpen(Player player) {
 		if (this.associatedChest != null) {
-			this.associatedChest.closeChest();
+			this.associatedChest.stopOpen(player);
 		}
 
 

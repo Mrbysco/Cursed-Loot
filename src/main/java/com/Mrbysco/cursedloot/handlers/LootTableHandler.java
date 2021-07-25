@@ -3,13 +3,13 @@ package com.mrbysco.cursedloot.handlers;
 import com.mrbysco.cursedloot.init.CursedRegistry;
 import com.mrbysco.cursedloot.util.CurseHelper;
 import com.mrbysco.cursedloot.util.CurseTags;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.LockableLootTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -17,26 +17,26 @@ public class LootTableHandler {
 	
 	@SubscribeEvent
     public void onLootTableLoad(PlayerInteractEvent.RightClickBlock event) {
-		World world = event.getWorld();
+		Level world = event.getWorld();
 		BlockPos pos = event.getPos();
-		if(!world.isClientSide && event.getHand() == Hand.MAIN_HAND) {
-			TileEntity te = world.getBlockEntity(pos);
-			if(te instanceof LockableLootTileEntity) {
-				LockableLootTileEntity chest = (LockableLootTileEntity)te;
+		if(!world.isClientSide && event.getHand() == InteractionHand.MAIN_HAND) {
+			BlockEntity te = world.getBlockEntity(pos);
+			if(te instanceof RandomizableContainerBlockEntity) {
+				RandomizableContainerBlockEntity chest = (RandomizableContainerBlockEntity)te;
 				if(chest.lootTable != null) {
 					for(int i = 0; i < chest.getContainerSize(); i++) {
 						ItemStack stack = chest.getItem(i);
 						if(!stack.isEmpty()) {
 							if(world.random.nextInt(100) < 75) {
-								CompoundNBT tag = new CompoundNBT();
+								CompoundTag tag = new CompoundTag();
 
 								CurseTags curseTag = CurseHelper.getRandomTag();
 								if(curseTag != null) {
 									if(curseTag == CurseTags.REMAIN_HIDDEN) {
 										ItemStack hiddenStack = new ItemStack(CursedRegistry.HIDDEN_ITEM.get());
 
-										CompoundNBT hiddenTag = new CompoundNBT();
-										hiddenTag.put(CurseTags.HIDDEN_TAG, stack.save(new CompoundNBT()));
+										CompoundTag hiddenTag = new CompoundTag();
+										hiddenTag.put(CurseTags.HIDDEN_TAG, stack.save(new CompoundTag()));
 										hiddenTag.putBoolean(curseTag.getCurseTag(), true);
 
 										hiddenStack.setTag(hiddenTag);

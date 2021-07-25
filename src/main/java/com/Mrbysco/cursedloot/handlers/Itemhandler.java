@@ -5,14 +5,14 @@ import com.mrbysco.cursedloot.init.CursedWorldData;
 import com.mrbysco.cursedloot.util.CurseHelper;
 import com.mrbysco.cursedloot.util.CurseTags;
 import com.mrbysco.cursedloot.util.InvHelper;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
@@ -26,12 +26,12 @@ public class ItemHandler {
 	 */
 	@SubscribeEvent
 	public void pickupEvent(EntityItemPickupEvent event) {
-		PlayerEntity player = event.getPlayer();
+		Player player = event.getPlayer();
 		ItemEntity entity = event.getItem();
 		ItemStack stack = entity.getItem();
 		if(stack.hasTag() && stack.getTag() != null) {
-			CompoundNBT tag = stack.getTag();
-			PlayerInventory inv = player.inventory;
+			CompoundTag tag = stack.getTag();
+			Inventory inv = player.getInventory();
 			
 			if(tag.getBoolean(CurseTags.LEFT_OR_RIGHT.getCurseTag())) {
 				if(InvHelper.getFirstEmptySideStack(inv.items) == -1) {
@@ -49,15 +49,15 @@ public class ItemHandler {
 	@SubscribeEvent
 	public void inventoryEvent(TickEvent.PlayerTickEvent event) {
 		if (event.phase.equals(TickEvent.Phase.START) && event.side.isServer()) {
-			PlayerEntity player = event.player;
-			World world = player.level;
+			Player player = event.player;
+			Level world = player.level;
 
-			PlayerInventory inv = player.inventory;
+			Inventory inv = player.getInventory();
 			for(int i = 0; i < inv.items.size(); i++) {
 				if(!inv.getItem(i).isEmpty()) {
 					ItemStack stack = inv.getItem(i);
 					if(stack.hasTag() && stack.getTag() != null) {
-						CompoundNBT tag = stack.getTag();
+						CompoundTag tag = stack.getTag();
 						//TopOrBottomTag
 						if(tag.getBoolean(CurseTags.TOP_OR_BOTTOM.getCurseTag())) {
 							if(!InvHelper.isTop(i)) {
@@ -77,7 +77,7 @@ public class ItemHandler {
 						//DestroyTag
 						if(tag.getBoolean(CurseTags.DESTROY_CURSE.getCurseTag())) {
 							if(tag.getBoolean(CurseTags.used_destroy_curse)) {
-								CompoundNBT tag2 = tag.copy();
+								CompoundTag tag2 = tag.copy();
 								tag2 = CurseHelper.removeCurse(tag2);
 								ItemStack stack2 = stack.copy();
 
@@ -88,7 +88,7 @@ public class ItemHandler {
 								if(directionalSlot != -1) {
 									ItemStack directionalStack = inv.getItem(directionalSlot);
 									if(directionalStack.hasTag() && directionalStack.getTag() != null) {
-										CompoundNBT dirTag = directionalStack.getTag();
+										CompoundTag dirTag = directionalStack.getTag();
 										if(CurseHelper.hasCurse(dirTag)) {
 											if(dirTag.getBoolean(CurseTags.REMAIN_HIDDEN.getCurseTag())) {
 												List<ItemStack> revealedStacks = CurseHelper.revealStacks(directionalStack, dirTag);
@@ -104,7 +104,7 @@ public class ItemHandler {
 													}
 												}
 											} else {
-												CompoundNBT curseLessTag = CurseHelper.removeCurse(dirTag);
+												CompoundTag curseLessTag = CurseHelper.removeCurse(dirTag);
 												
 												directionalStack.setTag(curseLessTag);
 											}
@@ -119,7 +119,7 @@ public class ItemHandler {
 						}
 						if(tag.getBoolean(CurseTags.ITEM_TO_SHOP.getCurseTag())) {
 							if(tag.getBoolean(CurseTags.USED_TO_SHOP_TAG)) {
-								CompoundNBT tag2 = tag.copy();
+								CompoundTag tag2 = tag.copy();
 								tag2 = CurseHelper.removeCurse(tag2);
 								ItemStack stack2 = stack.copy();
 
@@ -132,7 +132,7 @@ public class ItemHandler {
 									if(!directionalStack.isEmpty()) {
 										BaseChestInventory inventory = InvHelper.getChestInventory(player, world);
 										if(directionalStack.hasTag() && directionalStack.getTag() != null) {
-											CompoundNBT dirTag = directionalStack.getTag();
+											CompoundTag dirTag = directionalStack.getTag();
 											if(CurseHelper.hasCurse(dirTag)) {
 												if(dirTag.getBoolean(CurseTags.REMAIN_HIDDEN.getCurseTag())) {
 													List<ItemStack> revealedStacks = CurseHelper.revealStacks(directionalStack, dirTag);
@@ -142,7 +142,7 @@ public class ItemHandler {
 														}
 													}
 												} else {
-													CompoundNBT curseLessTag = CurseHelper.removeCurse(dirTag);
+													CompoundTag curseLessTag = CurseHelper.removeCurse(dirTag);
 													directionalStack.setTag(curseLessTag);
 													inventory.addItemStackToInventory(directionalStack);
 												}
@@ -169,20 +169,20 @@ public class ItemHandler {
 	
 	@SubscribeEvent
 	public void damageEvent(LivingHurtEvent event) {
-		if(event.getEntityLiving() instanceof PlayerEntity) {
-			PlayerEntity player = (PlayerEntity)event.getEntityLiving();
+		if(event.getEntityLiving() instanceof Player) {
+			Player player = (Player)event.getEntityLiving();
 
 			if(event.getSource() != null) {
-				PlayerInventory inv = player.inventory;
+				Inventory inv = player.getInventory();
 				for(int i = 0; i < inv.items.size(); i++) {
 					if(!inv.getItem(i).isEmpty()) {
 						ItemStack stack = inv.getItem(i);
 						if(stack.hasTag() && stack.getTag() != null) {
-							CompoundNBT tag = stack.getTag();
+							CompoundTag tag = stack.getTag();
 							if(tag.getBoolean(CurseTags.HITS_BREAK_ITEM.getCurseTag())) {
 								int hits = tag.getInt(CurseTags.HITS_TAG);
 								if(hits > 5) {
-									player.displayClientMessage(new TranslationTextComponent("cursedloot:hits.broken.item").append(stack.getHoverName()), true);
+									player.displayClientMessage(new TranslatableComponent("cursedloot:hits.broken.item").append(stack.getHoverName()), true);
 									inv.setItem(i, ItemStack.EMPTY);
 								} else {
 									tag.putInt(CurseTags.HITS_TAG, hits + 1);

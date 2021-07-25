@@ -2,9 +2,9 @@ package com.mrbysco.cursedloot.handlers;
 
 import com.mrbysco.cursedloot.Reference;
 import com.mrbysco.cursedloot.init.CursedRegistry;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -14,13 +14,13 @@ public class ChestHandler {
 	
 	@SubscribeEvent
 	public void firstJoin(PlayerLoggedInEvent event) {
-		PlayerEntity player = event.getPlayer();
+		Player player = event.getPlayer();
 		
 		if(!player.level.isClientSide) {
-			CompoundNBT playerData = player.getPersistentData();
+			CompoundTag playerData = player.getPersistentData();
 
 			if(!playerData.getBoolean(baseChestTag)) {
-				player.inventory.add(new ItemStack(CursedRegistry.BASE_CHEST.get()));
+				player.getInventory().add(new ItemStack(CursedRegistry.BASE_CHEST.get()));
 				playerData.putBoolean(baseChestTag, true);
 			}
 		}

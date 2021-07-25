@@ -1,6 +1,6 @@
 package com.mrbysco.cursedloot.util.info;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class CurseLocation {
 	private final ResourceLocation resource;

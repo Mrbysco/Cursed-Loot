@@ -4,12 +4,12 @@ import com.mrbysco.cursedloot.CursedLoot;
 import com.mrbysco.cursedloot.Reference;
 import com.mrbysco.cursedloot.blocks.inventory.BaseChestInventory;
 import com.mrbysco.cursedloot.init.CursedWorldData;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.NonNullList;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.FakePlayer;
 
 import javax.annotation.Nullable;
@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
 public class InvHelper {
 
 	@Nullable
-	public static BaseChestInventory getChestInventory(PlayerEntity player, World worldIn) {
+	public static BaseChestInventory getChestInventory(Player player, Level worldIn) {
 		if(worldIn.isClientSide || player instanceof FakePlayer) {
 			return null;
 		} else {
@@ -87,7 +87,7 @@ public class InvHelper {
 	}
 	
 	public static int getDirectionalSlotNumber(ItemStack currentStack, int currentSlot) {
-		CompoundNBT tag = currentStack.getTag();
+		CompoundTag tag = currentStack.getTag();
 		if(tag != null) {
 			if(tag.getBoolean(Reference.PREFIX + "north")) {
 				if(currentSlot >= 9 && currentSlot <= 17) {
@@ -167,11 +167,11 @@ public class InvHelper {
 		return -1;
 	}
 	
-	public static void loadItem(CompoundNBT tag, NonNullList<ItemStack> list) {
-        ListNBT nbttaglist = tag.getList(CurseTags.HIDDEN_TAG, 10);
+	public static void loadItem(CompoundTag tag, NonNullList<ItemStack> list) {
+        ListTag nbttaglist = tag.getList(CurseTags.HIDDEN_TAG, 10);
 
         for (int i = 0; i < nbttaglist.size(); ++i) {
-            CompoundNBT tagCompound = nbttaglist.getCompound(i);
+            CompoundTag tagCompound = nbttaglist.getCompound(i);
             int j = tagCompound.getByte("Slot") & 255;
 
             if (j < list.size()) {

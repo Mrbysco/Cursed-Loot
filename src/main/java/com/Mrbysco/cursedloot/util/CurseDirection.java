@@ -2,7 +2,7 @@ package com.mrbysco.cursedloot.util;
 
 import com.mrbysco.cursedloot.Reference;
 import com.mrbysco.cursedloot.util.info.CursePos;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 public enum CurseDirection {
     NORTH("north", new CursePos(32, 0)),
@@ -30,7 +30,7 @@ public enum CurseDirection {
         return this.directionPos;
     }
 
-    public static CursePos getDirectionFromTag(CompoundNBT tag) {
+    public static CursePos getDirectionFromTag(CompoundTag tag) {
         for(CurseDirection direction : values()) {
             if(tag.getBoolean(direction.curseTag)) {
                 return direction.getDirectionPos();

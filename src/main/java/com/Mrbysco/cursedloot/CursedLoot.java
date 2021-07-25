@@ -6,15 +6,15 @@ import com.mrbysco.cursedloot.handlers.ChestHandler;
 import com.mrbysco.cursedloot.handlers.ItemHandler;
 import com.mrbysco.cursedloot.handlers.LootTableHandler;
 import com.mrbysco.cursedloot.init.CursedRegistry;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.fmllegacy.network.NetworkRegistry;
+import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,7 +35,7 @@ public class CursedLoot {
 
 		CursedRegistry.BLOCKS.register(eventBus);
 		CursedRegistry.ITEMS.register(eventBus);
-		CursedRegistry.TILE_ENTITIES.register(eventBus);
+		CursedRegistry.BLOCK_ENTITIES.register(eventBus);
 
 		MinecraftForge.EVENT_BUS.register(new LootTableHandler());
 		MinecraftForge.EVENT_BUS.register(new ItemHandler());

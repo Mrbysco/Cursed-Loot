@@ -2,12 +2,12 @@ package com.mrbysco.cursedloot.util;
 
 import com.mrbysco.cursedloot.Reference;
 import com.mrbysco.cursedloot.util.info.CurseLocation;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class CurseHelper {
 		return CurseTags.values()[random];
 	}
 
-	public static List<ItemStack> revealStacks(ItemStack hiddenStack, @Nonnull CompoundNBT tag) {
+	public static List<ItemStack> revealStacks(ItemStack hiddenStack, @Nonnull CompoundTag tag) {
 		ItemStack revealedStack = ItemStack.of(tag.getCompound(CurseTags.HIDDEN_TAG));
 		if (hiddenStack.getCount() > 1) {
 			int total = revealedStack.getCount() * hiddenStack.getCount();
@@ -58,25 +58,25 @@ public class CurseHelper {
 		return CurseDirection.values()[random];
 	}
 
-	public static void addLore(List<ITextComponent> tooltips, CompoundNBT compound) {
+	public static void addLore(List<Component> tooltips, CompoundTag compound) {
 		for(CurseTags tag : CurseTags.values()) {
 			if(compound.getBoolean(tag.getCurseTag())) {
 				tooltips.add(Reference.emptyComponent);
 				tooltips.add(Reference.emptyComponent);
 				tooltips.add(Reference.emptyComponent);
 				tooltips.add(Reference.emptyComponent);
-				tooltips.add(new TranslationTextComponent(tag.getLowercaseCurseTag() + ".lore").withStyle(TextFormatting.YELLOW));
+				tooltips.add(new TranslatableComponent(tag.getLowercaseCurseTag() + ".lore").withStyle(ChatFormatting.YELLOW));
 				if(tag == CurseTags.HITS_BREAK_ITEM) {
 					if(compound.getInt(CurseTags.HITS_TAG) > 0) {
 						int hits = compound.getInt(CurseTags.HITS_TAG);
-						tooltips.add(new TranslationTextComponent(CurseTags.HITS_TAG.toLowerCase() + ".lore", hits).withStyle(TextFormatting.YELLOW));
+						tooltips.add(new TranslatableComponent(CurseTags.HITS_TAG.toLowerCase() + ".lore", hits).withStyle(ChatFormatting.YELLOW));
 					}
 				}
 			}
 		}
 	}
 
-	public static CurseLocation getIconLocation(CompoundNBT compound) {
+	public static CurseLocation getIconLocation(CompoundTag compound) {
 		for(CurseTags curseTag : CurseTags.values()) {
 			String tag = curseTag.getCurseTag();
 			ResourceLocation textureLocation = curseTag.getTextureLocation();
@@ -91,7 +91,7 @@ public class CurseHelper {
 		return null;
 	}
 
-	public static boolean hasCurse(CompoundNBT compound) {
+	public static boolean hasCurse(CompoundTag compound) {
 		boolean hasCurse = false;
 		for(CurseTags curseTag : CurseTags.values()) {
 			if(compound.getBoolean(curseTag.getCurseTag())) {
@@ -101,7 +101,7 @@ public class CurseHelper {
 		return hasCurse;
 	}
 
-	public static CompoundNBT removeCurse(CompoundNBT compound) {
+	public static CompoundTag removeCurse(CompoundTag compound) {
 		for(CurseTags curseTag : CurseTags.values()) {
 			String tag = curseTag.getCurseTag();
 			if(compound.getBoolean(tag)) {
@@ -120,7 +120,7 @@ public class CurseHelper {
 		return compound;
 	}
 
-	public static CompoundNBT removeDirections(CompoundNBT compound) {
+	public static CompoundTag removeDirections(CompoundTag compound) {
 		for(CurseDirection curseDirection : CurseDirection.values()) {
 			String tag = curseDirection.getDirectionTag();
 			if(compound.getBoolean(tag)) {
@@ -130,7 +130,7 @@ public class CurseHelper {
 		return compound;
 	}
 
-	public static CurseTags getCurse(CompoundNBT compound) {
+	public static CurseTags getCurse(CompoundTag compound) {
 		CurseTags foundCurse = null;
 		for(CurseTags curseTag : CurseTags.values()) {
 			String tag = curseTag.getCurseTag();

@@ -2,72 +2,78 @@ package com.mrbysco.cursedloot.init;
 
 import com.mrbysco.cursedloot.Reference;
 import com.mrbysco.cursedloot.blocks.inventory.BaseChestInventory;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.DimensionSavedDataManager;
-import net.minecraft.world.storage.WorldSavedData;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class CursedWorldData extends WorldSavedData {
+public class CursedWorldData extends SavedData {
 	private static final String DATA_NAME = Reference.MOD_ID + "_world_data";
 
 	private Map<UUID, BaseChestInventory> baseChestMap = new HashMap<>();
 	private Map<String, BaseChestInventory> teamChestMap = new HashMap<>();
 
-	public CursedWorldData() {
-		super(DATA_NAME);
+
+	public CursedWorldData(Map<UUID, BaseChestInventory> baseMap, Map<String, BaseChestInventory> teamMap) {
+		this.baseChestMap = baseMap;
+		this.teamChestMap = teamMap;
 	}
 
-	@Override
-	public void load(CompoundNBT nbt) {
-		ListNBT baseChestsList = nbt.getList("baseChests", Constants.NBT.TAG_COMPOUND);
-		ListNBT teamChestsList = nbt.getList("teamChests", Constants.NBT.TAG_COMPOUND);
+	public CursedWorldData() {
+		this(new HashMap<>(), new HashMap<>());
+	}
 
-		baseChestMap.clear();
-		teamChestMap.clear();
+	public static CursedWorldData load(CompoundTag tag) {
+		ListTag baseChestsList = tag.getList("baseChests", Constants.NBT.TAG_COMPOUND);
+		ListTag teamChestsList = tag.getList("teamChests", Constants.NBT.TAG_COMPOUND);
+
+		Map<UUID, BaseChestInventory> baseMap = new HashMap<>();
+		Map<String, BaseChestInventory> teamMap = new HashMap<>();
 
 		for (int i = 0; i < baseChestsList.size(); ++i) {
-			CompoundNBT tag = baseChestsList.getCompound(i);
-			UUID uuid = tag.getUUID("Owner");
-			int chestSize = tag.getInt("ChestSize");
-			ListNBT chestTag = tag.getList("BaseChest", 10);
+			CompoundTag listTag = baseChestsList.getCompound(i);
+			UUID uuid = listTag.getUUID("Owner");
+			int chestSize = listTag.getInt("ChestSize");
+			ListTag chestTag = listTag.getList("BaseChest", 10);
 			BaseChestInventory inventory = new BaseChestInventory(chestSize);
 			inventory.fromTag(chestTag);
 
-			baseChestMap.put(uuid, inventory);
+			baseMap.put(uuid, inventory);
 		}
 		for (int i = 0; i < teamChestsList.size(); ++i) {
-			CompoundNBT tag = teamChestsList.getCompound(i);
-			String team = tag.getString("Team");
-			int chestSize = tag.getInt("ChestSize");
-			ListNBT chestTag = tag.getList("BaseChest", 10);
+			CompoundTag teamTag = teamChestsList.getCompound(i);
+			String team = teamTag.getString("Team");
+			int chestSize = teamTag.getInt("ChestSize");
+			ListTag chestTag = teamTag.getList("BaseChest", 10);
 			BaseChestInventory inventory = new BaseChestInventory(chestSize);
 			inventory.fromTag(chestTag);
 
-			teamChestMap.put(team, inventory);
+			teamMap.put(team, inventory);
 		}
+		return new CursedWorldData(baseMap, teamMap);
 	}
 
 	@Override
-	public CompoundNBT save(CompoundNBT compound) {
-		ListNBT baseChestsList = new ListNBT();
+	public CompoundTag save(CompoundTag compound) {
+		ListTag baseChestsList = new ListTag();
 		for (Map.Entry<UUID, BaseChestInventory> entry : baseChestMap.entrySet()) {
-			CompoundNBT baseChestsTag = new CompoundNBT();
+			CompoundTag baseChestsTag = new CompoundTag();
 			baseChestsTag.putUUID("Owner", entry.getKey());
 			baseChestsTag.putInt("ChestSize", entry.getValue().getContainerSize());
 			baseChestsTag.put("BaseChest", entry.getValue().createTag());
 			baseChestsList.add(baseChestsTag);
 		}
 		compound.put("baseChests", baseChestsList);
-		ListNBT teamChestsList = new ListNBT();
+		ListTag teamChestsList = new ListTag();
 		for (Map.Entry<String, BaseChestInventory> entry : teamChestMap.entrySet()) {
-			CompoundNBT teamChestTag = new CompoundNBT();
+			CompoundTag teamChestTag = new CompoundTag();
 			teamChestTag.putString("Team", entry.getKey());
 			teamChestTag.putInt("ChestSize", entry.getValue().getContainerSize());
 			teamChestTag.put("BaseChest", entry.getValue().createTag());
@@ -98,13 +104,13 @@ public class CursedWorldData extends WorldSavedData {
 		}
 	}
 
-	public static CursedWorldData get(World world) {
-		if (!(world instanceof ServerWorld)) {
+	public static CursedWorldData get(Level world) {
+		if (!(world instanceof ServerLevel)) {
 			throw new RuntimeException("Attempted to get the data from a client world. This is wrong.");
 		}
-		ServerWorld overworld = world.getServer().getLevel(World.OVERWORLD);
+		ServerLevel overworld = world.getServer().getLevel(Level.OVERWORLD);
 
-		DimensionSavedDataManager storage = overworld.getDataStorage();
-		return storage.computeIfAbsent(CursedWorldData::new, DATA_NAME);
+		DimensionDataStorage storage = overworld.getDataStorage();
+		return storage.computeIfAbsent(CursedWorldData::load, CursedWorldData::new, DATA_NAME);
 	}
 }

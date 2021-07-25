@@ -1,7 +1,7 @@
 package com.mrbysco.cursedloot.util;
 
 import com.mrbysco.cursedloot.Reference;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public enum CurseTags {
     DESTROY_CURSE(0, "destroyCurse", "destroy_curse", true),
