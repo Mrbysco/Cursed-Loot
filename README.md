@@ -9,4 +9,4 @@ Adds curses to dungeon loot in the game
   - [![License](https://img.shields.io/badge/License-MIT-red.svg?style=flat)](http://opensource.org/licenses/MIT)
 
 ## Downloads ##
-Downloads will be available at CurseForge
+Downloads will be available at [CurseForge](https://www.curseforge.com/minecraft/mc-mods/cursed-loot)
