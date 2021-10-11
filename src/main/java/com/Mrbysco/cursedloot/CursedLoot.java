@@ -32,6 +32,7 @@ public class CursedLoot {
 
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 			eventBus.addListener(ClientHandler::onClientSetup);
+			eventBus.addListener(ClientHandler::registerRenders);
 			eventBus.addListener(ClientHandler::registerLayerDefinitions);
 			eventBus.addListener(ClientHandler::preStitchEvent);
 			MinecraftForge.EVENT_BUS.register(new ClientEvents());

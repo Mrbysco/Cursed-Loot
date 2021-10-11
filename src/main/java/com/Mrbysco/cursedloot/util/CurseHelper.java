@@ -61,10 +61,6 @@ public class CurseHelper {
 	public static void addLore(List<Component> tooltips, CompoundTag compound) {
 		for(CurseTags tag : CurseTags.values()) {
 			if(compound.getBoolean(tag.getCurseTag())) {
-				tooltips.add(Reference.emptyComponent);
-				tooltips.add(Reference.emptyComponent);
-				tooltips.add(Reference.emptyComponent);
-				tooltips.add(Reference.emptyComponent);
 				tooltips.add(new TranslatableComponent(tag.getLowercaseCurseTag() + ".lore").withStyle(ChatFormatting.YELLOW));
 				if(tag == CurseTags.HITS_BREAK_ITEM) {
 					if(compound.getInt(CurseTags.HITS_TAG) > 0) {

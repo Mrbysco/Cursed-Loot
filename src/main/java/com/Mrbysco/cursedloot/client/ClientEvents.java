@@ -2,25 +2,23 @@ package com.mrbysco.cursedloot.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mrbysco.cursedloot.Reference;
+import com.mojang.datafixers.util.Either;
 import com.mrbysco.cursedloot.util.CurseHelper;
 import com.mrbysco.cursedloot.util.info.CurseLocation;
 import com.mrbysco.cursedloot.util.info.CursePos;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag.Default;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fmlclient.gui.GuiUtils;
-
-import java.util.List;
 
 public class ClientEvents {
 
@@ -33,20 +31,26 @@ public class ClientEvents {
         }
     }
 
-    @SubscribeEvent
-    public void tooltipEvent(RenderTooltipEvent.PostText event) {
-        Minecraft mc = Minecraft.getInstance();
-        PoseStack poseStack = event.getMatrixStack();
-        if(mc.player == null)
-            return;
+    static record CurseTooltip(ItemStack stack) implements TooltipComponent {
 
-        ItemStack stack = event.getStack();
-        CompoundTag tags = stack.hasTag() && stack.getTag() != null ? stack.getTag() : new CompoundTag();
+    }
 
-        if(!tags.isEmpty() && CurseHelper.hasCurse(tags)) {
-            Font fontRenderer = mc.font;
-            int fontHeight = fontRenderer.lineHeight + 1;
+    record CurseClientTooltip(CurseTooltip tooltip) implements ClientTooltipComponent {
 
+        @Override
+        public int getHeight() {
+            return 32;
+        }
+
+        @Override
+        public int getWidth(Font font) {
+            return 32;
+        }
+
+        @Override
+        public void renderImage(Font font, int x, int y, PoseStack poseStack, ItemRenderer itemRenderer_, int zIndex, TextureManager textureManager) {
+            ItemStack stack = tooltip.stack;
+            CompoundTag tags = stack.hasTag() && stack.getTag() != null ? stack.getTag() : new CompoundTag();
             RenderSystem.enableBlend();
 
             CurseLocation curseTextureInfo = CurseHelper.getIconLocation(tags);
@@ -58,33 +62,21 @@ public class ClientEvents {
                 RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
                 RenderSystem.setShaderTexture(0, icon);
 
-                int middle = (fontRenderer.width(stack.getHoverName().getContents()))/2;
+//                    int posX = x + 14;
+//                    int posY = y + 14;
 
-                int posX = event.getX() + middle;
-                int posY = event.getY() + 14;
-
-                List<Component> tooltips = stack.getTooltipLines((Player) null, Default.ADVANCED);
-                if(!tooltips.isEmpty()) {
-                    for(int i = 0; i < tooltips.size(); i++) {
-                        Component component = tooltips.get(i);
-                        if(component.equals(Reference.emptyComponent)) {
-                            int location = i - 1;
-                            posY = event.getY() + (fontHeight * location);
-                            if(mc.options.advancedItemTooltips) {
-                                posY += (int)(fontHeight * 1.5);
-                            } else {
-                                posY -= 4;
-                            }
-                            if(event.getWidth() < 200) {
-                                posY -= fontHeight;
-                            }
-                            break;
-                        }
-                    }
-
-                    GuiUtils.drawTexturedModalRect(poseStack, posX, posY, texturePos.getPosX(), texturePos.getPosY(), 32, 32, 1);
-                }
+                GuiUtils.drawTexturedModalRect(poseStack, x, y, texturePos.getPosX(), texturePos.getPosY(), 32, 32, 1);
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void gatherTooltips(RenderTooltipEvent.GatherComponents event) {
+        ItemStack stack = event.getStack();
+        CompoundTag tags = stack.hasTag() && stack.getTag() != null ? stack.getTag() : new CompoundTag();
+
+        if(!tags.isEmpty() && CurseHelper.hasCurse(tags)) {
+            event.getTooltipElements().add(Either.right(new CurseTooltip(stack)));
         }
     }
 }
