@@ -10,9 +10,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 public class CursedRegistry {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Reference.MOD_ID);
@@ -23,7 +23,7 @@ public class CursedRegistry {
             .strength(2.5F, 1000.0F).sound(SoundType.WOOD).noOcclusion()));
     public static final RegistryObject<Item> BASE_CHEST_ITEM = ITEMS.register("base_chest", () -> new BaseChestBlockItem(BASE_CHEST.get(), new Item.Properties()));
 
-    public static final RegistryObject<Item> HIDDEN_ITEM = ITEMS.register("hidden_item", () -> new HiddenItem(new Item.Properties()));
+    public static final net.minecraftforge.registries.RegistryObject<Item> HIDDEN_ITEM = ITEMS.register("hidden_item", () -> new HiddenItem(new Item.Properties()));
 
     public static final RegistryObject<BlockEntityType<BaseChestBlockEntity>> BASE_CHEST_BLOCK_ENTITY = BLOCK_ENTITIES.register("base_chest", () -> BlockEntityType.Builder.of(BaseChestBlockEntity::new, CursedRegistry.BASE_CHEST.get()).build(null));
 }

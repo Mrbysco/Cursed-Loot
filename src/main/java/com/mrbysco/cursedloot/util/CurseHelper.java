@@ -1,6 +1,5 @@
 package com.mrbysco.cursedloot.util;
 
-import com.mrbysco.cursedloot.Reference;
 import com.mrbysco.cursedloot.util.info.CurseLocation;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;

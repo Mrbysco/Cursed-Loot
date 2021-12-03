@@ -10,15 +10,14 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.RenderTooltipEvent;
+import net.minecraftforge.client.gui.GuiUtils;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fmlclient.gui.GuiUtils;
 
 public class ClientEvents {
 
@@ -31,7 +30,7 @@ public class ClientEvents {
         }
     }
 
-    static record CurseTooltip(ItemStack stack) implements TooltipComponent {
+    record CurseTooltip(ItemStack stack) implements TooltipComponent {
 
     }
 
@@ -48,7 +47,7 @@ public class ClientEvents {
         }
 
         @Override
-        public void renderImage(Font font, int x, int y, PoseStack poseStack, ItemRenderer itemRenderer_, int zIndex, TextureManager textureManager) {
+        public void renderImage(Font font, int x, int y, PoseStack poseStack, ItemRenderer itemRenderer, int zIndex) {
             ItemStack stack = tooltip.stack;
             CompoundTag tags = stack.hasTag() && stack.getTag() != null ? stack.getTag() : new CompoundTag();
             RenderSystem.enableBlend();
@@ -72,7 +71,7 @@ public class ClientEvents {
 
     @SubscribeEvent
     public void gatherTooltips(RenderTooltipEvent.GatherComponents event) {
-        ItemStack stack = event.getStack();
+        ItemStack stack = event.getItemStack();
         CompoundTag tags = stack.hasTag() && stack.getTag() != null ? stack.getTag() : new CompoundTag();
 
         if(!tags.isEmpty() && CurseHelper.hasCurse(tags)) {

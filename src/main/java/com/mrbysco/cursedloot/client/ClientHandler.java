@@ -6,12 +6,10 @@ import com.mrbysco.cursedloot.client.ClientEvents.CurseTooltip;
 import com.mrbysco.cursedloot.client.renderer.BaseChestRenderer;
 import com.mrbysco.cursedloot.init.CursedRegistry;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 public class ClientHandler {
@@ -22,7 +20,7 @@ public class ClientHandler {
     }
 
     public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
-        event.registerLayerDefinition(BASE_CHEST, () -> BaseChestRenderer.createSingleBodyLayer());
+        event.registerLayerDefinition(BASE_CHEST, BaseChestRenderer::createSingleBodyLayer);
     }
 
     public static void registerRenders(EntityRenderersEvent.RegisterRenderers event) {
@@ -31,7 +29,7 @@ public class ClientHandler {
 
     public static final ResourceLocation BASE_CHEST_LOCATION = new ResourceLocation(Reference.MOD_ID, "entity/base_chest");
     public static void preStitchEvent(TextureStitchEvent.Pre event) {
-        if(event.getMap().location().toString().equals("minecraft:textures/atlas/chest.png")) {
+        if(event.getAtlas().location().toString().equals("minecraft:textures/atlas/chest.png")) {
             event.addSprite(BASE_CHEST_LOCATION);
         }
     }

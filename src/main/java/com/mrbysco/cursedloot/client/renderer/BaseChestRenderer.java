@@ -59,8 +59,7 @@ public class BaseChestRenderer<T extends BlockEntity & LidBlockEntity> implement
         BlockState blockstate = flag ? tileEntityIn.getBlockState() : CursedRegistry.BASE_CHEST.get().defaultBlockState().setValue(BaseChestBlock.FACING, Direction.SOUTH);
         Block block = blockstate.getBlock();
 
-        if (block instanceof BaseChestBlock) {
-            BaseChestBlock abstractchestblock = (BaseChestBlock)block;
+        if (block instanceof BaseChestBlock abstractchestblock) {
 
             poseStack.pushPose();
             float f = blockstate.getValue(BaseChestBlock.FACING).toYRot();

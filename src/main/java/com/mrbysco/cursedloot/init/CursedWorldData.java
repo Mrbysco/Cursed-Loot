@@ -8,7 +8,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
-import net.minecraftforge.common.util.Constants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,8 +30,8 @@ public class CursedWorldData extends SavedData {
 	}
 
 	public static CursedWorldData load(CompoundTag tag) {
-		ListTag baseChestsList = tag.getList("baseChests", Constants.NBT.TAG_COMPOUND);
-		ListTag teamChestsList = tag.getList("teamChests", Constants.NBT.TAG_COMPOUND);
+		ListTag baseChestsList = tag.getList("baseChests", CompoundTag.TAG_COMPOUND);
+		ListTag teamChestsList = tag.getList("teamChests", CompoundTag.TAG_COMPOUND);
 
 		Map<UUID, BaseChestInventory> baseMap = new HashMap<>();
 		Map<String, BaseChestInventory> teamMap = new HashMap<>();
