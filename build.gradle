@@ -83,11 +83,11 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
-//    maven {
-//        // location of the maven that hosts JEI files
-//        name = "Progwml6 maven"
-//        url = "https://dvs1.progwml6.com/files/maven/"
-//    }
+    maven {
+        // location of the maven that hosts JEI files
+        name = "Progwml6 maven"
+        url = "https://dvs1.progwml6.com/files/maven/"
+    }
 //    maven {
 //        url = 'https://www.cursemaven.com'
 //        content {
@@ -99,8 +99,8 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
-//    compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
-//    runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-1.18:${jei_version}")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.18:${jei_version}")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
