@@ -15,8 +15,8 @@ public class BaseChestInventory extends SimpleContainer {
 		super(slots);
 	}
 
-	public void setChestTileEntity(BaseChestBlockEntity chestTileEntity) {
-		this.associatedChest = chestTileEntity;
+	public void setChestBlockEntity(BaseChestBlockEntity chestBlockEntity) {
+		this.associatedChest = chestBlockEntity;
 	}
 
 	public void fromTag(ListTag listTag) {

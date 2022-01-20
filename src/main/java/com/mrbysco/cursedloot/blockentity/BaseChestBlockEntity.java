@@ -8,9 +8,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -109,10 +107,6 @@ public class BaseChestBlockEntity extends BlockEntity implements LidBlockEntity 
         }
 
         return 0;
-    }
-
-    protected AbstractContainerMenu createMenu(int containerID, Inventory inventory) {
-        return null;//ChestMenu.threeRows(containerID, inventory, this);
     }
 
     public void recheckOpen() {

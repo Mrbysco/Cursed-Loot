@@ -88,19 +88,12 @@ repositories {
         name = "Progwml6 maven"
         url = "https://dvs1.progwml6.com/files/maven/"
     }
-//    maven {
-//        url = 'https://www.cursemaven.com'
-//        content {
-//            includeGroup "curse.maven"
-//        }
-//    }
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
-    compileOnly fg.deobf("mezz.jei:jei-1.18:${jei_version}")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.18:${jei_version}")
+    implementation fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

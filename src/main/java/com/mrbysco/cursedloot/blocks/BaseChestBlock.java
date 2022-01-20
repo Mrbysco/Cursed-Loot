@@ -100,7 +100,7 @@ public class BaseChestBlock extends AbstractChestBlock<BaseChestBlockEntity> imp
                 return InteractionResult.SUCCESS;
             } else {
                 BaseChestBlockEntity baseChestBlockEntityEntity = (BaseChestBlockEntity)blockEntity;
-                baseChestInventory.setChestTileEntity(baseChestBlockEntityEntity);
+                baseChestInventory.setChestBlockEntity(baseChestBlockEntityEntity);
                 if(baseChestInventory.getContainerSize() == 27) {
                     player.openMenu(new SimpleMenuProvider((id, inventory, playerIn) -> ChestMenu.threeRows(id, inventory, baseChestInventory),
                             baseChestBlockEntityEntity.getDefaultName()));
