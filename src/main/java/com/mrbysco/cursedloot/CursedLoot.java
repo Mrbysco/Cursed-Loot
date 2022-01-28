@@ -2,12 +2,14 @@ package com.mrbysco.cursedloot;
 
 import com.mrbysco.cursedloot.client.ClientEvents;
 import com.mrbysco.cursedloot.client.ClientHandler;
+import com.mrbysco.cursedloot.commands.CursedCommands;
 import com.mrbysco.cursedloot.handlers.ChestHandler;
 import com.mrbysco.cursedloot.handlers.ItemHandler;
 import com.mrbysco.cursedloot.handlers.LootTableHandler;
 import com.mrbysco.cursedloot.init.CursedRegistry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
@@ -30,6 +32,8 @@ public class CursedLoot {
 		MinecraftForge.EVENT_BUS.register(new ItemHandler());
 		MinecraftForge.EVENT_BUS.register(new ChestHandler());
 
+		MinecraftForge.EVENT_BUS.addListener(this::onCommandRegister);
+
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 			eventBus.addListener(ClientHandler::onClientSetup);
 			eventBus.addListener(ClientHandler::registerRenders);
@@ -37,5 +41,9 @@ public class CursedLoot {
 			eventBus.addListener(ClientHandler::preStitchEvent);
 			MinecraftForge.EVENT_BUS.register(new ClientEvents());
 		});
+	}
+
+	public void onCommandRegister(RegisterCommandsEvent event) {
+		CursedCommands.initializeCommands(event.getDispatcher());
 	}
 }

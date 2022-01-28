@@ -3,6 +3,8 @@ package com.mrbysco.cursedloot.util;
 import com.mrbysco.cursedloot.Reference;
 import net.minecraft.resources.ResourceLocation;
 
+import javax.annotation.Nullable;
+
 public enum CurseTags {
     DESTROY_CURSE(0, "destroyCurse", "destroy_curse", true),
     REMAIN_HIDDEN(1, "remainHidden", "remain_hidden"),
@@ -22,19 +24,22 @@ public enum CurseTags {
     private final int curseID;
     private final String curseTag;
     private final ResourceLocation textureLocation;
+    private final ResourceLocation registryLocation;
     private final boolean directional;
 
-    CurseTags(int curseId, String name, String textureLocation) {
+    CurseTags(int curseId, String name, String registryPath) {
         this.curseID = curseId;
         this.curseTag = Reference.MOD_PREFIX + name;
-        this.textureLocation = new ResourceLocation(Reference.MOD_ID, "textures/gui/" + textureLocation + ".png");
+        this.textureLocation = new ResourceLocation(Reference.MOD_ID, "textures/gui/" + registryPath + ".png");
+        this.registryLocation = new ResourceLocation(Reference.MOD_ID, registryPath);
         this.directional = false;
     }
 
-    CurseTags(int curseId, String name, String textureLocation, boolean directional) {
+    CurseTags(int curseId, String name, String registryPath, boolean directional) {
         this.curseID = curseId;
         this.curseTag = Reference.MOD_PREFIX + name;
-        this.textureLocation = new ResourceLocation(Reference.MOD_ID, "textures/gui/" + textureLocation + ".png");
+        this.textureLocation = new ResourceLocation(Reference.MOD_ID, "textures/gui/" + registryPath + ".png");
+        this.registryLocation = new ResourceLocation(Reference.MOD_ID, registryPath);
         this.directional = directional;
     }
 
@@ -52,16 +57,29 @@ public enum CurseTags {
         return this.textureLocation;
     }
 
+    public ResourceLocation getRegistryLocation() {
+        return this.registryLocation;
+    }
+
     public boolean isDirectional() {
         return this.directional;
     }
 
-    public static CurseTags getByID(int ID)
-    {
+    public static CurseTags getByID(int ID) {
         return values()[ID];
     }
 
     public static CurseTags getByName(String name) {
         return CurseTags.valueOf(name);
+    }
+
+    @Nullable
+    public static CurseTags getByRegistryName(ResourceLocation name) {
+        for(CurseTags tag : values()) {
+            if(tag.getRegistryLocation().equals(name)) {
+                return tag;
+            }
+        }
+        return null;
     }
 }

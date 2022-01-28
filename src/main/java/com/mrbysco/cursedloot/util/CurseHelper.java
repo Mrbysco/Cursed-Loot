@@ -1,5 +1,6 @@
 package com.mrbysco.cursedloot.util;
 
+import com.mrbysco.cursedloot.init.CursedRegistry;
 import com.mrbysco.cursedloot.util.info.CurseLocation;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -15,6 +16,41 @@ import java.util.List;
 import java.util.Random;
 
 public class CurseHelper {
+
+	public static ItemStack applyRandomCurse(ItemStack stack) {
+		return applyCurse(stack, getRandomTag());
+	}
+
+	public static ItemStack applyCurse(ItemStack stack, CurseTags curseTag) {
+		CompoundTag tag = new CompoundTag();
+
+		if(curseTag != null) {
+			if(curseTag == CurseTags.REMAIN_HIDDEN) {
+				ItemStack hiddenStack = new ItemStack(CursedRegistry.HIDDEN_ITEM.get());
+
+				CompoundTag hiddenTag = new CompoundTag();
+				hiddenTag.put(CurseTags.HIDDEN_TAG, stack.save(new CompoundTag()));
+				hiddenTag.putBoolean(curseTag.getCurseTag(), true);
+
+				hiddenStack.setTag(hiddenTag);
+				return hiddenStack;
+			} else {
+				tag.putBoolean(curseTag.getCurseTag(), true);
+
+				if(curseTag == CurseTags.DESTROY_CURSE) {
+					tag.putBoolean(CurseTags.used_destroy_curse, false);
+				}
+				if(curseTag.isDirectional()) {
+					String locationTag = CurseHelper.getRandomLocation().getDirectionTag();
+					if(locationTag != null)
+						tag.putBoolean(locationTag, true);
+				}
+				tag.putBoolean("cursedLoot", true);
+				stack.setTag(tag);
+			}
+		}
+		return stack;
+	}
 
 	public static CurseTags getRandomTag() {
 		int random = new Random().nextInt(CurseTags.values().length);
