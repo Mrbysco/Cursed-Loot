@@ -84,7 +84,7 @@ public class CursedWorldData extends SavedData {
 	}
 
 	public BaseChestInventory getInventoryFromUUID(UUID uuid) {
-		if(baseChestMap.containsKey(uuid)) {
+		if (baseChestMap.containsKey(uuid)) {
 			return baseChestMap.get(uuid);
 		} else {
 			BaseChestInventory baseChestInventory = new BaseChestInventory(27);
@@ -94,7 +94,7 @@ public class CursedWorldData extends SavedData {
 	}
 
 	public BaseChestInventory getInventoryFromTeam(String teamName) {
-		if(teamChestMap.containsKey(teamName)) {
+		if (teamChestMap.containsKey(teamName)) {
 			return teamChestMap.get(teamName);
 		} else {
 			BaseChestInventory baseChestInventory = new BaseChestInventory(27);

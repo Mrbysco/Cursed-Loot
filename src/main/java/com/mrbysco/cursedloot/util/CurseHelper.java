@@ -24,8 +24,8 @@ public class CurseHelper {
 	public static ItemStack applyCurse(ItemStack stack, CurseTags curseTag) {
 		CompoundTag tag = new CompoundTag();
 
-		if(curseTag != null) {
-			if(curseTag == CurseTags.REMAIN_HIDDEN) {
+		if (curseTag != null) {
+			if (curseTag == CurseTags.REMAIN_HIDDEN) {
 				ItemStack hiddenStack = new ItemStack(CursedRegistry.HIDDEN_ITEM.get());
 
 				CompoundTag hiddenTag = new CompoundTag();
@@ -37,12 +37,12 @@ public class CurseHelper {
 			} else {
 				tag.putBoolean(curseTag.getCurseTag(), true);
 
-				if(curseTag == CurseTags.DESTROY_CURSE) {
+				if (curseTag == CurseTags.DESTROY_CURSE) {
 					tag.putBoolean(CurseTags.used_destroy_curse, false);
 				}
-				if(curseTag.isDirectional()) {
+				if (curseTag.isDirectional()) {
 					String locationTag = CurseHelper.getRandomLocation().getDirectionTag();
-					if(locationTag != null)
+					if (locationTag != null)
 						tag.putBoolean(locationTag, true);
 				}
 				tag.putBoolean("cursedLoot", true);
@@ -94,11 +94,11 @@ public class CurseHelper {
 	}
 
 	public static void addLore(List<Component> tooltips, CompoundTag compound) {
-		for(CurseTags tag : CurseTags.values()) {
-			if(compound.getBoolean(tag.getCurseTag())) {
+		for (CurseTags tag : CurseTags.values()) {
+			if (compound.getBoolean(tag.getCurseTag())) {
 				tooltips.add(new TranslatableComponent(tag.getLowercaseCurseTag() + ".lore").withStyle(ChatFormatting.YELLOW));
-				if(tag == CurseTags.HITS_BREAK_ITEM) {
-					if(compound.getInt(CurseTags.HITS_TAG) > 0) {
+				if (tag == CurseTags.HITS_BREAK_ITEM) {
+					if (compound.getInt(CurseTags.HITS_TAG) > 0) {
 						int hits = compound.getInt(CurseTags.HITS_TAG);
 						tooltips.add(new TranslatableComponent(CurseTags.HITS_TAG.toLowerCase() + ".lore", hits).withStyle(ChatFormatting.YELLOW));
 					}
@@ -108,11 +108,11 @@ public class CurseHelper {
 	}
 
 	public static CurseLocation getIconLocation(CompoundTag compound) {
-		for(CurseTags curseTag : CurseTags.values()) {
+		for (CurseTags curseTag : CurseTags.values()) {
 			String tag = curseTag.getCurseTag();
 			ResourceLocation textureLocation = curseTag.getTextureLocation();
-			if(compound.getBoolean(tag)) {
-				if(curseTag.isDirectional()) {
+			if (compound.getBoolean(tag)) {
+				if (curseTag.isDirectional()) {
 					return new CurseLocation(textureLocation, CurseDirection.getDirectionFromTag(compound));
 				} else {
 					return new CurseLocation(textureLocation);
@@ -124,8 +124,8 @@ public class CurseHelper {
 
 	public static boolean hasCurse(CompoundTag compound) {
 		boolean hasCurse = false;
-		for(CurseTags curseTag : CurseTags.values()) {
-			if(compound.getBoolean(curseTag.getCurseTag())) {
+		for (CurseTags curseTag : CurseTags.values()) {
+			if (compound.getBoolean(curseTag.getCurseTag())) {
 				hasCurse = true;
 			}
 		}
@@ -133,9 +133,9 @@ public class CurseHelper {
 	}
 
 	public static CompoundTag removeCurse(CompoundTag compound) {
-		for(CurseTags curseTag : CurseTags.values()) {
+		for (CurseTags curseTag : CurseTags.values()) {
 			String tag = curseTag.getCurseTag();
-			if(compound.getBoolean(tag)) {
+			if (compound.getBoolean(tag)) {
 				compound.remove(tag);
 			}
 		}
@@ -143,7 +143,7 @@ public class CurseHelper {
 		compound.remove(CurseTags.used_destroy_curse);
 		compound.remove(CurseTags.USED_TO_SHOP_TAG);
 		compound.remove("cursedLoot");
-		if(compound.isEmpty()) {
+		if (compound.isEmpty()) {
 			compound = null;
 		} else {
 			compound = compound.copy();
@@ -152,9 +152,9 @@ public class CurseHelper {
 	}
 
 	public static CompoundTag removeDirections(CompoundTag compound) {
-		for(CurseDirection curseDirection : CurseDirection.values()) {
+		for (CurseDirection curseDirection : CurseDirection.values()) {
 			String tag = curseDirection.getDirectionTag();
-			if(compound.getBoolean(tag)) {
+			if (compound.getBoolean(tag)) {
 				compound.remove(tag);
 			}
 		}
@@ -163,9 +163,9 @@ public class CurseHelper {
 
 	public static CurseTags getCurse(CompoundTag compound) {
 		CurseTags foundCurse = null;
-		for(CurseTags curseTag : CurseTags.values()) {
+		for (CurseTags curseTag : CurseTags.values()) {
 			String tag = curseTag.getCurseTag();
-			if(compound.getBoolean(tag)) {
+			if (compound.getBoolean(tag)) {
 				foundCurse = CurseTags.valueOf(tag);
 			}
 		}

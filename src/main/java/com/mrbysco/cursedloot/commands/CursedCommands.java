@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CursedCommands {
-	public static void initializeCommands (CommandDispatcher<CommandSourceStack> dispatcher) {
+	public static void initializeCommands(CommandDispatcher<CommandSourceStack> dispatcher) {
 		final LiteralArgumentBuilder<CommandSourceStack> root = Commands.literal(Reference.MOD_ID);
 		root.requires((sourceStack) -> sourceStack.hasPermission(2))
 				.then(Commands.literal("randomCurse")
@@ -30,23 +30,23 @@ public class CursedCommands {
 								.then(Commands.argument("slot", IntegerArgumentType.integer(0)).executes(CursedCommands::randomCurse))))
 				.then(Commands.literal("curse")
 						.then(Commands.argument("curseID", ResourceLocationArgument.id()).suggests((cs, builder) -> {
-									List<String> curseIDS = new ArrayList<>();
-									for(CurseTags tag : CurseTags.values()) {
-										curseIDS.add(tag.getRegistryLocation().toString());
-									}
-									return SharedSuggestionProvider.suggest(curseIDS, builder);
-								}).then(Commands.argument("player", EntityArgument.players())
-										.then(Commands.argument("slot", IntegerArgumentType.integer(0)).executes(CursedCommands::curseSlot)))));
+							List<String> curseIDS = new ArrayList<>();
+							for (CurseTags tag : CurseTags.values()) {
+								curseIDS.add(tag.getRegistryLocation().toString());
+							}
+							return SharedSuggestionProvider.suggest(curseIDS, builder);
+						}).then(Commands.argument("player", EntityArgument.players())
+								.then(Commands.argument("slot", IntegerArgumentType.integer(0)).executes(CursedCommands::curseSlot)))));
 		dispatcher.register(root);
 	}
 
 	private static int randomCurse(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
 		final int slot = IntegerArgumentType.getInteger(ctx, "slot");
-		for(ServerPlayer player : EntityArgument.getPlayers(ctx, "player")) {
+		for (ServerPlayer player : EntityArgument.getPlayers(ctx, "player")) {
 			Inventory inventory = player.getInventory();
-			if(slot >= 0) {
+			if (slot >= 0) {
 				ItemStack stack = inventory.getItem(slot);
-				if(!stack.isEmpty()) {
+				if (!stack.isEmpty()) {
 					ItemStack cursedStack = CurseHelper.applyRandomCurse(stack);
 					inventory.setItem(slot, cursedStack);
 				}
@@ -59,11 +59,11 @@ public class CursedCommands {
 	private static int curseSlot(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
 		final int slot = IntegerArgumentType.getInteger(ctx, "slot");
 		final ResourceLocation curse = ResourceLocationArgument.getId(ctx, "curseID");
-		for(ServerPlayer player : EntityArgument.getPlayers(ctx, "player")) {
+		for (ServerPlayer player : EntityArgument.getPlayers(ctx, "player")) {
 			Inventory inventory = player.getInventory();
-			if(slot >= 0) {
+			if (slot >= 0) {
 				ItemStack stack = inventory.getItem(slot);
-				if(!stack.isEmpty()) {
+				if (!stack.isEmpty()) {
 					CurseTags curseTag = CurseTags.getByRegistryName(curse);
 					ItemStack cursedStack = CurseHelper.applyCurse(stack, curseTag);
 					inventory.setItem(slot, cursedStack);

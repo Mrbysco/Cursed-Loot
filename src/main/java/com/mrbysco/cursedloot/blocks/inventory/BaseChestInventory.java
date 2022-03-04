@@ -20,11 +20,11 @@ public class BaseChestInventory extends SimpleContainer {
 	}
 
 	public void fromTag(ListTag listTag) {
-		for(int i = 0; i < this.getContainerSize(); ++i) {
+		for (int i = 0; i < this.getContainerSize(); ++i) {
 			this.setItem(i, ItemStack.EMPTY);
 		}
 
-		for(int k = 0; k < listTag.size(); ++k) {
+		for (int k = 0; k < listTag.size(); ++k) {
 			CompoundTag compoundTag = listTag.getCompound(k);
 			int j = compoundTag.getByte("Slot") & 255;
 			if (j >= 0 && j < this.getContainerSize()) {
@@ -37,11 +37,11 @@ public class BaseChestInventory extends SimpleContainer {
 	public ListTag createTag() {
 		ListTag listTag = new ListTag();
 
-		for(int i = 0; i < this.getContainerSize(); ++i) {
+		for (int i = 0; i < this.getContainerSize(); ++i) {
 			ItemStack itemstack = this.getItem(i);
 			if (!itemstack.isEmpty()) {
 				CompoundTag compoundTag = new CompoundTag();
-				compoundTag.putByte("Slot", (byte)i);
+				compoundTag.putByte("Slot", (byte) i);
 				itemstack.save(compoundTag);
 				listTag.add(compoundTag);
 			}
@@ -72,7 +72,7 @@ public class BaseChestInventory extends SimpleContainer {
 
 
 		super.stopOpen(player);
-		if(!player.level.isClientSide) {
+		if (!player.level.isClientSide) {
 			CursedWorldData.get(player.level).setDirty();
 		}
 		this.associatedChest = null;
@@ -83,7 +83,7 @@ public class BaseChestInventory extends SimpleContainer {
 			return false;
 		}
 		int slot = getFirstEmptyStack();
-		if(slot >= 0) {
+		if (slot >= 0) {
 			setItem(slot, stack.copy());
 			stack.setCount(0);
 			return true;
@@ -93,7 +93,7 @@ public class BaseChestInventory extends SimpleContainer {
 	}
 
 	public int getFirstEmptyStack() {
-		for(int i = 0; i < this.getContainerSize(); ++i) {
+		for (int i = 0; i < this.getContainerSize(); ++i) {
 			if (this.getItem(i).isEmpty()) {
 				return i;
 			}

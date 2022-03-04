@@ -9,13 +9,13 @@ import net.minecraft.world.level.Level;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class HiddenItem extends Item{
+public class HiddenItem extends Item {
 	public HiddenItem(Item.Properties properties) {
 		super(properties);
 	}
 
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        super.appendHoverText(stack, worldIn, tooltip, flagIn);
-    }
+	@Override
+	public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+		super.appendHoverText(stack, worldIn, tooltip, flagIn);
+	}
 }

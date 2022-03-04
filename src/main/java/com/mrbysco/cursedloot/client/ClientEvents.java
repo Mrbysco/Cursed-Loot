@@ -21,61 +21,61 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class ClientEvents {
 
-    @SubscribeEvent
-    public void setToolTip(ItemTooltipEvent event) {
-        ItemStack stack = event.getItemStack();
-        CompoundTag tag = stack.getTag();
-        if (tag != null && !tag.isEmpty()) {
-            CurseHelper.addLore(event.getToolTip(), tag);
-        }
-    }
+	@SubscribeEvent
+	public void setToolTip(ItemTooltipEvent event) {
+		ItemStack stack = event.getItemStack();
+		CompoundTag tag = stack.getTag();
+		if (tag != null && !tag.isEmpty()) {
+			CurseHelper.addLore(event.getToolTip(), tag);
+		}
+	}
 
-    record CurseTooltip(ItemStack stack) implements TooltipComponent {
+	record CurseTooltip(ItemStack stack) implements TooltipComponent {
 
-    }
+	}
 
-    record CurseClientTooltip(CurseTooltip tooltip) implements ClientTooltipComponent {
+	record CurseClientTooltip(CurseTooltip tooltip) implements ClientTooltipComponent {
 
-        @Override
-        public int getHeight() {
-            return 32;
-        }
+		@Override
+		public int getHeight() {
+			return 32;
+		}
 
-        @Override
-        public int getWidth(Font font) {
-            return 32;
-        }
+		@Override
+		public int getWidth(Font font) {
+			return 32;
+		}
 
-        @Override
-        public void renderImage(Font font, int x, int y, PoseStack poseStack, ItemRenderer itemRenderer, int zIndex) {
-            ItemStack stack = tooltip.stack;
-            CompoundTag tags = stack.hasTag() && stack.getTag() != null ? stack.getTag() : new CompoundTag();
-            RenderSystem.enableBlend();
+		@Override
+		public void renderImage(Font font, int x, int y, PoseStack poseStack, ItemRenderer itemRenderer, int zIndex) {
+			ItemStack stack = tooltip.stack;
+			CompoundTag tags = stack.hasTag() && stack.getTag() != null ? stack.getTag() : new CompoundTag();
+			RenderSystem.enableBlend();
 
-            CurseLocation curseTextureInfo = CurseHelper.getIconLocation(tags);
-            if(curseTextureInfo != null) {
-                ResourceLocation icon = curseTextureInfo.getResource();
-                CursePos texturePos = curseTextureInfo.getPosition();
+			CurseLocation curseTextureInfo = CurseHelper.getIconLocation(tags);
+			if (curseTextureInfo != null) {
+				ResourceLocation icon = curseTextureInfo.getResource();
+				CursePos texturePos = curseTextureInfo.getPosition();
 
-                RenderSystem.setShader(GameRenderer::getPositionTexShader);
-                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-                RenderSystem.setShaderTexture(0, icon);
+				RenderSystem.setShader(GameRenderer::getPositionTexShader);
+				RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+				RenderSystem.setShaderTexture(0, icon);
 
 //                    int posX = x + 14;
 //                    int posY = y + 14;
 
-                GuiUtils.drawTexturedModalRect(poseStack, x, y, texturePos.getPosX(), texturePos.getPosY(), 32, 32, 1);
-            }
-        }
-    }
+				GuiUtils.drawTexturedModalRect(poseStack, x, y, texturePos.getPosX(), texturePos.getPosY(), 32, 32, 1);
+			}
+		}
+	}
 
-    @SubscribeEvent
-    public void gatherTooltips(RenderTooltipEvent.GatherComponents event) {
-        ItemStack stack = event.getItemStack();
-        CompoundTag tags = stack.hasTag() && stack.getTag() != null ? stack.getTag() : new CompoundTag();
+	@SubscribeEvent
+	public void gatherTooltips(RenderTooltipEvent.GatherComponents event) {
+		ItemStack stack = event.getItemStack();
+		CompoundTag tags = stack.hasTag() && stack.getTag() != null ? stack.getTag() : new CompoundTag();
 
-        if(!tags.isEmpty() && CurseHelper.hasCurse(tags)) {
-            event.getTooltipElements().add(Either.right(new CurseTooltip(stack)));
-        }
-    }
+		if (!tags.isEmpty() && CurseHelper.hasCurse(tags)) {
+			event.getTooltipElements().add(Either.right(new CurseTooltip(stack)));
+		}
+	}
 }

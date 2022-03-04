@@ -12,7 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public class BaseChestItemStackRenderer extends BlockEntityWithoutLevelRenderer{
+public class BaseChestItemStackRenderer extends BlockEntityWithoutLevelRenderer {
 	private BaseChestBlockEntity baseChest = null;
 	private BlockEntityRenderDispatcher blockEntityRenderDispatcher = null;
 
@@ -22,15 +22,15 @@ public class BaseChestItemStackRenderer extends BlockEntityWithoutLevelRenderer{
 
 	@Override
 	public void renderByItem(ItemStack itemStackIn, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLightIn, int combinedOverlayIn) {
-		if(baseChest == null) {
+		if (baseChest == null) {
 			this.baseChest = new BaseChestBlockEntity(BlockPos.ZERO, CursedRegistry.BASE_CHEST.get().defaultBlockState());
 		}
-		if(blockEntityRenderDispatcher == null) {
+		if (blockEntityRenderDispatcher == null) {
 			final Minecraft minecraft = Minecraft.getInstance();
 			blockEntityRenderDispatcher = minecraft.getBlockEntityRenderDispatcher();
 		}
-		if(blockEntityRenderDispatcher != null) {
-			blockEntityRenderDispatcher.renderItem((BlockEntity)baseChest, poseStack, bufferSource, combinedLightIn, combinedOverlayIn);
+		if (blockEntityRenderDispatcher != null) {
+			blockEntityRenderDispatcher.renderItem((BlockEntity) baseChest, poseStack, bufferSource, combinedLightIn, combinedOverlayIn);
 		}
 	}
 }

@@ -31,68 +31,68 @@ import net.minecraft.world.level.block.entity.LidBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class BaseChestRenderer<T extends BlockEntity & LidBlockEntity> implements BlockEntityRenderer<T> {
-    private final ModelPart lid;
-    private final ModelPart bottom;
-    private final ModelPart lock;
+	private final ModelPart lid;
+	private final ModelPart bottom;
+	private final ModelPart lock;
 
-    public BaseChestRenderer(BlockEntityRendererProvider.Context context) {
-        ModelPart modelpart = context.bakeLayer(ClientHandler.BASE_CHEST);
-        this.bottom = modelpart.getChild("bottom");
-        this.lid = modelpart.getChild("lid");
-        this.lock = modelpart.getChild("lock");
-    }
+	public BaseChestRenderer(BlockEntityRendererProvider.Context context) {
+		ModelPart modelpart = context.bakeLayer(ClientHandler.BASE_CHEST);
+		this.bottom = modelpart.getChild("bottom");
+		this.lid = modelpart.getChild("lid");
+		this.lock = modelpart.getChild("lock");
+	}
 
-    public static LayerDefinition createSingleBodyLayer() {
-        MeshDefinition meshdefinition = new MeshDefinition();
-        PartDefinition partdefinition = meshdefinition.getRoot();
-        partdefinition.addOrReplaceChild("bottom", CubeListBuilder.create().texOffs(0, 19).addBox(1.0F, 0.0F, 1.0F, 14.0F, 10.0F, 14.0F), PartPose.ZERO);
-        partdefinition.addOrReplaceChild("lid", CubeListBuilder.create().texOffs(0, 0).addBox(1.0F, 0.0F, 0.0F, 14.0F, 5.0F, 14.0F), PartPose.offset(0.0F, 9.0F, 1.0F));
-        partdefinition.addOrReplaceChild("lock", CubeListBuilder.create().texOffs(0, 0).addBox(7.0F, -1.0F, 15.0F, 2.0F, 4.0F, 1.0F), PartPose.offset(0.0F, 8.0F, 0.0F));
-        return LayerDefinition.create(meshdefinition, 64, 64);
-    }
+	public static LayerDefinition createSingleBodyLayer() {
+		MeshDefinition meshdefinition = new MeshDefinition();
+		PartDefinition partdefinition = meshdefinition.getRoot();
+		partdefinition.addOrReplaceChild("bottom", CubeListBuilder.create().texOffs(0, 19).addBox(1.0F, 0.0F, 1.0F, 14.0F, 10.0F, 14.0F), PartPose.ZERO);
+		partdefinition.addOrReplaceChild("lid", CubeListBuilder.create().texOffs(0, 0).addBox(1.0F, 0.0F, 0.0F, 14.0F, 5.0F, 14.0F), PartPose.offset(0.0F, 9.0F, 1.0F));
+		partdefinition.addOrReplaceChild("lock", CubeListBuilder.create().texOffs(0, 0).addBox(7.0F, -1.0F, 15.0F, 2.0F, 4.0F, 1.0F), PartPose.offset(0.0F, 8.0F, 0.0F));
+		return LayerDefinition.create(meshdefinition, 64, 64);
+	}
 
-    @Override
-    public void render(T tileEntityIn, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLightIn, int combinedOverlayIn) {
-        Level world = tileEntityIn.getLevel();
-        boolean flag = world != null;
+	@Override
+	public void render(T tileEntityIn, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLightIn, int combinedOverlayIn) {
+		Level world = tileEntityIn.getLevel();
+		boolean flag = world != null;
 
-        BlockState blockstate = flag ? tileEntityIn.getBlockState() : CursedRegistry.BASE_CHEST.get().defaultBlockState().setValue(BaseChestBlock.FACING, Direction.SOUTH);
-        Block block = blockstate.getBlock();
+		BlockState blockstate = flag ? tileEntityIn.getBlockState() : CursedRegistry.BASE_CHEST.get().defaultBlockState().setValue(BaseChestBlock.FACING, Direction.SOUTH);
+		Block block = blockstate.getBlock();
 
-        if (block instanceof BaseChestBlock abstractchestblock) {
+		if (block instanceof BaseChestBlock abstractchestblock) {
 
-            poseStack.pushPose();
-            float f = blockstate.getValue(BaseChestBlock.FACING).toYRot();
-            poseStack.translate(0.5D, 0.5D, 0.5D);
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(-f));
-            poseStack.translate(-0.5D, -0.5D, -0.5D);
+			poseStack.pushPose();
+			float f = blockstate.getValue(BaseChestBlock.FACING).toYRot();
+			poseStack.translate(0.5D, 0.5D, 0.5D);
+			poseStack.mulPose(Vector3f.YP.rotationDegrees(-f));
+			poseStack.translate(-0.5D, -0.5D, -0.5D);
 
-            DoubleBlockCombiner.NeighborCombineResult<? extends BaseChestBlockEntity> icallbackwrapper;
-            if (flag) {
-                icallbackwrapper = abstractchestblock.getWrapper(blockstate, world, tileEntityIn.getBlockPos(), true);
-            } else {
-                icallbackwrapper = DoubleBlockCombiner.Combiner::acceptNone;
-            }
+			DoubleBlockCombiner.NeighborCombineResult<? extends BaseChestBlockEntity> icallbackwrapper;
+			if (flag) {
+				icallbackwrapper = abstractchestblock.getWrapper(blockstate, world, tileEntityIn.getBlockPos(), true);
+			} else {
+				icallbackwrapper = DoubleBlockCombiner.Combiner::acceptNone;
+			}
 
-            float f1 = icallbackwrapper.<Float2FloatFunction>apply(BaseChestBlock.opennessCombiner(tileEntityIn)).get(partialTicks);
-            f1 = 1.0F - f1;
-            f1 = 1.0F - f1 * f1 * f1;
-            int i = icallbackwrapper.<Int2IntFunction>apply(new BrightnessCombiner<>()).applyAsInt(combinedLightIn);
+			float f1 = icallbackwrapper.<Float2FloatFunction>apply(BaseChestBlock.opennessCombiner(tileEntityIn)).get(partialTicks);
+			f1 = 1.0F - f1;
+			f1 = 1.0F - f1 * f1 * f1;
+			int i = icallbackwrapper.<Int2IntFunction>apply(new BrightnessCombiner<>()).applyAsInt(combinedLightIn);
 
-            Material rendermaterial = new Material(Sheets.CHEST_SHEET, ClientHandler.BASE_CHEST_LOCATION);
-            VertexConsumer ivertexbuilder = rendermaterial.buffer(bufferSource, RenderType::entityCutout);
+			Material rendermaterial = new Material(Sheets.CHEST_SHEET, ClientHandler.BASE_CHEST_LOCATION);
+			VertexConsumer ivertexbuilder = rendermaterial.buffer(bufferSource, RenderType::entityCutout);
 
-            this.render(poseStack, ivertexbuilder, this.lid, this.lock, this.bottom, f1, i, combinedOverlayIn);
+			this.render(poseStack, ivertexbuilder, this.lid, this.lock, this.bottom, f1, i, combinedOverlayIn);
 
-            poseStack.popPose();
-        }
-    }
+			poseStack.popPose();
+		}
+	}
 
-    private void render(PoseStack poseStack, VertexConsumer consumer, ModelPart part, ModelPart part1, ModelPart part2, float p_112375_, int p_112376_, int combinedOverlayIn) {
-        part.xRot = -(p_112375_ * ((float)Math.PI / 2F));
-        part1.xRot = part.xRot;
-        part.render(poseStack, consumer, p_112376_, combinedOverlayIn);
-        part1.render(poseStack, consumer, p_112376_, combinedOverlayIn);
-        part2.render(poseStack, consumer, p_112376_, combinedOverlayIn);
-    }
+	private void render(PoseStack poseStack, VertexConsumer consumer, ModelPart part, ModelPart part1, ModelPart part2, float p_112375_, int p_112376_, int combinedOverlayIn) {
+		part.xRot = -(p_112375_ * ((float) Math.PI / 2F));
+		part1.xRot = part.xRot;
+		part.render(poseStack, consumer, p_112376_, combinedOverlayIn);
+		part1.render(poseStack, consumer, p_112376_, combinedOverlayIn);
+		part2.render(poseStack, consumer, p_112376_, combinedOverlayIn);
+	}
 }
