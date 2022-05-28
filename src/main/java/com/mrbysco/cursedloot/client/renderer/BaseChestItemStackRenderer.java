@@ -10,7 +10,7 @@ import net.minecraft.tileentity.TileEntity;
 
 import java.util.function.Supplier;
 
-public class BaseChestItemStackRenderer <T extends TileEntity> extends ItemStackTileEntityRenderer {
+public class BaseChestItemStackRenderer<T extends TileEntity> extends ItemStackTileEntityRenderer {
 
 	private final Supplier<T> te;
 

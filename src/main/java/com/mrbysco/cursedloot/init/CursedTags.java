@@ -6,5 +6,5 @@ import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
 
 public class CursedTags {
-    public static final ITag.INamedTag<Item> CURRENCY_ITEMS = ItemTags.bind(Reference.MOD_ID + ":currency_items");
+	public static final ITag.INamedTag<Item> CURRENCY_ITEMS = ItemTags.bind(Reference.MOD_ID + ":currency_items");
 }

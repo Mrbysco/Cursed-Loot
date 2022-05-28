@@ -22,63 +22,63 @@ import java.util.List;
 
 public class ClientEvents {
 
-    @SubscribeEvent
-    public void setToolTip(ItemTooltipEvent event) {
-        ItemStack stack = event.getItemStack();
-        CompoundNBT tag = stack.getTag();
-        if (tag != null && !tag.isEmpty()) {
-            CurseHelper.addLore(event.getToolTip(), tag);
-        }
-    }
+	@SubscribeEvent
+	public void setToolTip(ItemTooltipEvent event) {
+		ItemStack stack = event.getItemStack();
+		CompoundNBT tag = stack.getTag();
+		if (tag != null && !tag.isEmpty()) {
+			CurseHelper.addLore(event.getToolTip(), tag);
+		}
+	}
 
-    @SubscribeEvent
-    public void tooltipEvent(RenderTooltipEvent.PostText event) {
-        Minecraft mc = Minecraft.getInstance();
-        if(mc.player == null)
-            return;
+	@SubscribeEvent
+	public void tooltipEvent(RenderTooltipEvent.PostText event) {
+		Minecraft mc = Minecraft.getInstance();
+		if (mc.player == null)
+			return;
 
-        ItemStack stack = event.getStack();
-        CompoundNBT tags = stack.hasTag() && stack.getTag() != null ? stack.getTag() : new CompoundNBT();
+		ItemStack stack = event.getStack();
+		CompoundNBT tags = stack.hasTag() && stack.getTag() != null ? stack.getTag() : new CompoundNBT();
 
-        if(!tags.isEmpty() && CurseHelper.hasCurse(tags)) {
-            FontRenderer fontRenderer = mc.font;
-            int fontHeight = fontRenderer.lineHeight + 1;
+		if (!tags.isEmpty() && CurseHelper.hasCurse(tags)) {
+			FontRenderer fontRenderer = mc.font;
+			int fontHeight = fontRenderer.lineHeight + 1;
 
-            RenderSystem.enableBlend();
+			RenderSystem.enableBlend();
 
-            CurseLocation curseTextureInfo = CurseHelper.getIconLocation(tags);
-            if(curseTextureInfo != null) {
-                ResourceLocation icon = curseTextureInfo.getResource();
-                CursePos texturePos = curseTextureInfo.getPosition();
+			CurseLocation curseTextureInfo = CurseHelper.getIconLocation(tags);
+			if (curseTextureInfo != null) {
+				ResourceLocation icon = curseTextureInfo.getResource();
+				CursePos texturePos = curseTextureInfo.getPosition();
 
-                mc.getTextureManager().bind(icon);
-                int middle = (fontRenderer.width(stack.getHoverName().getContents()))/2;
+				mc.getTextureManager().bind(icon);
+				int middle = (fontRenderer.width(stack.getHoverName().getContents())) / 2;
 
-                int posX = event.getX() + middle;
-                int posY = event.getY() + 14;
+				int posX = event.getX() + middle;
+				int posY = event.getY() + 14;
 
-                List<ITextComponent> tooltips = stack.getTooltipLines((PlayerEntity) null, TooltipFlags.ADVANCED);
-                if(!tooltips.isEmpty()) {
-                    for(int i = 0; i < tooltips.size(); i++) {
-                        ITextComponent component = tooltips.get(i);
-                        if(component.equals(Reference.emptyComponent)) {
-                            int location = i - 1;
-                            posY = event.getY() + (fontHeight * location);
-                            if(mc.options.advancedItemTooltips) {
-                                posY += (int)(fontHeight * 1.5);
-                            } else {
-                                posY -= 4;
-                            }
-                            if(event.getWidth() < 200) {
-                                posY -= fontHeight;
-                            }
-                            break;
-                        }
-                    }
+				List<ITextComponent> tooltips = stack.getTooltipLines((PlayerEntity) null, TooltipFlags.ADVANCED);
+				if (!tooltips.isEmpty()) {
+					for (int i = 0; i < tooltips.size(); i++) {
+						ITextComponent component = tooltips.get(i);
+						if (component.equals(Reference.emptyComponent)) {
+							int location = i - 1;
+							posY = event.getY() + (fontHeight * location);
+							if (mc.options.advancedItemTooltips) {
+								posY += (int) (fontHeight * 1.5);
+							} else {
+								posY -= 4;
+							}
+							if (event.getWidth() < 200) {
+								posY -= fontHeight;
+							}
+							break;
+						}
+					}
 
-                    GuiUtils.drawTexturedModalRect(event.getMatrixStack(), posX, posY, texturePos.getPosX(), texturePos.getPosY(), 32, 32, 1);
-                }
-            }
-        }
-    }
+					GuiUtils.drawTexturedModalRect(event.getMatrixStack(), posX, posY, texturePos.getPosX(), texturePos.getPosY(), 32, 32, 1);
+				}
+			}
+		}
+	}
 }

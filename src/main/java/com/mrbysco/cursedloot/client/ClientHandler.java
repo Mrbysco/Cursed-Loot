@@ -9,14 +9,15 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 public class ClientHandler {
-    public static void onClientSetup(FMLClientSetupEvent event) {
-        ClientRegistry.bindTileEntityRenderer(CursedRegistry.BASE_CHEST_TILE.get(), BaseChestTESR::new);
-    }
+	public static void onClientSetup(FMLClientSetupEvent event) {
+		ClientRegistry.bindTileEntityRenderer(CursedRegistry.BASE_CHEST_TILE.get(), BaseChestTESR::new);
+	}
 
-    public static final ResourceLocation BASE_CHEST_LOCATION = new ResourceLocation(Reference.MOD_ID, "entity/base_chest");
-    public static void preStitchEvent(TextureStitchEvent.Pre event) {
-        if(event.getMap().location().toString().equals("minecraft:textures/atlas/chest.png")) {
-            event.addSprite(BASE_CHEST_LOCATION);
-        }
-    }
+	public static final ResourceLocation BASE_CHEST_LOCATION = new ResourceLocation(Reference.MOD_ID, "entity/base_chest");
+
+	public static void preStitchEvent(TextureStitchEvent.Pre event) {
+		if (event.getMap().location().toString().equals("minecraft:textures/atlas/chest.png")) {
+			event.addSprite(BASE_CHEST_LOCATION);
+		}
+	}
 }

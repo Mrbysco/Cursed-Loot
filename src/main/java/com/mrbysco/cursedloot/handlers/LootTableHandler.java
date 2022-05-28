@@ -14,25 +14,25 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class LootTableHandler {
-	
+
 	@SubscribeEvent
-    public void onLootTableLoad(PlayerInteractEvent.RightClickBlock event) {
+	public void onLootTableLoad(PlayerInteractEvent.RightClickBlock event) {
 		World world = event.getWorld();
 		BlockPos pos = event.getPos();
-		if(!world.isClientSide && event.getHand() == Hand.MAIN_HAND) {
+		if (!world.isClientSide && event.getHand() == Hand.MAIN_HAND) {
 			TileEntity te = world.getBlockEntity(pos);
-			if(te instanceof LockableLootTileEntity) {
-				LockableLootTileEntity chest = (LockableLootTileEntity)te;
-				if(chest.lootTable != null) {
-					for(int i = 0; i < chest.getContainerSize(); i++) {
+			if (te instanceof LockableLootTileEntity) {
+				LockableLootTileEntity chest = (LockableLootTileEntity) te;
+				if (chest.lootTable != null) {
+					for (int i = 0; i < chest.getContainerSize(); i++) {
 						ItemStack stack = chest.getItem(i);
-						if(!stack.isEmpty()) {
-							if(world.random.nextInt(100) < 75) {
+						if (!stack.isEmpty()) {
+							if (world.random.nextInt(100) < 75) {
 								CompoundNBT tag = new CompoundNBT();
 
 								CurseTags curseTag = CurseHelper.getRandomTag();
-								if(curseTag != null) {
-									if(curseTag == CurseTags.REMAIN_HIDDEN) {
+								if (curseTag != null) {
+									if (curseTag == CurseTags.REMAIN_HIDDEN) {
 										ItemStack hiddenStack = new ItemStack(CursedRegistry.HIDDEN_ITEM.get());
 
 										CompoundNBT hiddenTag = new CompoundNBT();
@@ -44,12 +44,12 @@ public class LootTableHandler {
 									} else {
 										tag.putBoolean(curseTag.getCurseTag(), true);
 
-										if(curseTag == CurseTags.DESTROY_CURSE) {
+										if (curseTag == CurseTags.DESTROY_CURSE) {
 											tag.putBoolean(CurseTags.used_destroy_curse, false);
 										}
-										if(curseTag.isDirectional()) {
+										if (curseTag.isDirectional()) {
 											String locationTag = CurseHelper.getRandomLocation().getDirectionTag();
-											if(locationTag != null)
+											if (locationTag != null)
 												tag.putBoolean(locationTag, true);
 										}
 										tag.putBoolean("cursedLoot", true);
