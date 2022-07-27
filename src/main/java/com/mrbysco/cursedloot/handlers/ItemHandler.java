@@ -6,7 +6,7 @@ import com.mrbysco.cursedloot.util.CurseHelper;
 import com.mrbysco.cursedloot.util.CurseTags;
 import com.mrbysco.cursedloot.util.InvHelper;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -26,9 +26,9 @@ public class ItemHandler {
 	 */
 	@SubscribeEvent
 	public void pickupEvent(EntityItemPickupEvent event) {
-		Player player = event.getPlayer();
-		ItemEntity entity = event.getItem();
-		ItemStack stack = entity.getItem();
+		final Player player = event.getEntity();
+		final ItemEntity entity = event.getItem();
+		final ItemStack stack = entity.getItem();
 		if (stack.hasTag() && stack.getTag() != null) {
 			CompoundTag tag = stack.getTag();
 			Inventory inv = player.getInventory();
@@ -49,8 +49,8 @@ public class ItemHandler {
 	@SubscribeEvent
 	public void inventoryEvent(TickEvent.PlayerTickEvent event) {
 		if (event.phase.equals(TickEvent.Phase.START) && event.side.isServer()) {
-			Player player = event.player;
-			Level world = player.level;
+			final Player player = event.player;
+			final Level level = player.level;
 
 			Inventory inv = player.getInventory();
 			for (int i = 0; i < inv.items.size(); i++) {
@@ -130,7 +130,7 @@ public class ItemHandler {
 								if (directionalSlot != -1) {
 									ItemStack directionalStack = inv.getItem(directionalSlot);
 									if (!directionalStack.isEmpty()) {
-										BaseChestInventory inventory = InvHelper.getChestInventory(player, world);
+										BaseChestInventory inventory = InvHelper.getChestInventory(player, level);
 										if (directionalStack.hasTag() && directionalStack.getTag() != null) {
 											CompoundTag dirTag = directionalStack.getTag();
 											if (CurseHelper.hasCurse(dirTag)) {
@@ -155,7 +155,7 @@ public class ItemHandler {
 										directionalStack.setCount(0);
 
 										tag.putBoolean(CurseTags.USED_TO_SHOP_TAG, true);
-										CursedWorldData.get(world).setDirty();
+										CursedWorldData.get(level).setDirty();
 									}
 								}
 							}
@@ -169,7 +169,7 @@ public class ItemHandler {
 
 	@SubscribeEvent
 	public void damageEvent(LivingHurtEvent event) {
-		if (event.getEntityLiving() instanceof Player player) {
+		if (event.getEntity() instanceof Player player) {
 			if (event.getSource() != null) {
 				Inventory inv = player.getInventory();
 				for (int i = 0; i < inv.items.size(); i++) {
@@ -180,7 +180,7 @@ public class ItemHandler {
 							if (tag.getBoolean(CurseTags.HITS_BREAK_ITEM.getCurseTag())) {
 								int hits = tag.getInt(CurseTags.HITS_TAG);
 								if (hits > 5) {
-									player.displayClientMessage(new TranslatableComponent("cursedloot:hits.broken.item").append(stack.getHoverName()), true);
+									player.displayClientMessage(Component.translatable("cursedloot:hits.broken.item").append(stack.getHoverName()), true);
 									inv.setItem(i, ItemStack.EMPTY);
 								} else {
 									tag.putInt(CurseTags.HITS_TAG, hits + 1);

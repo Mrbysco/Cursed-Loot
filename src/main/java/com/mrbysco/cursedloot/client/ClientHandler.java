@@ -7,16 +7,15 @@ import com.mrbysco.cursedloot.client.renderer.BaseChestRenderer;
 import com.mrbysco.cursedloot.init.CursedRegistry;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 public class ClientHandler {
 	public static final ModelLayerLocation BASE_CHEST = new ModelLayerLocation(new ResourceLocation(Reference.MOD_ID, "base_chest"), "base_chest");
 
-	public static void onClientSetup(FMLClientSetupEvent event) {
-		MinecraftForgeClient.registerTooltipComponentFactory(CurseTooltip.class, CurseClientTooltip::new);
+	public static void registerClientTooltip(RegisterClientTooltipComponentFactoriesEvent event) {
+		event.register(CurseTooltip.class, CurseClientTooltip::new);
 	}
 
 	public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {

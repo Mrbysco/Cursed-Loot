@@ -5,7 +5,6 @@ import com.mrbysco.cursedloot.util.info.CurseLocation;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -96,11 +95,11 @@ public class CurseHelper {
 	public static void addLore(List<Component> tooltips, CompoundTag compound) {
 		for (CurseTags tag : CurseTags.values()) {
 			if (compound.getBoolean(tag.getCurseTag())) {
-				tooltips.add(new TranslatableComponent(tag.getLowercaseCurseTag() + ".lore").withStyle(ChatFormatting.YELLOW));
+				tooltips.add(Component.translatable(tag.getLowercaseCurseTag() + ".lore").withStyle(ChatFormatting.YELLOW));
 				if (tag == CurseTags.HITS_BREAK_ITEM) {
 					if (compound.getInt(CurseTags.HITS_TAG) > 0) {
 						int hits = compound.getInt(CurseTags.HITS_TAG);
-						tooltips.add(new TranslatableComponent(CurseTags.HITS_TAG.toLowerCase() + ".lore", hits).withStyle(ChatFormatting.YELLOW));
+						tooltips.add(Component.translatable(CurseTags.HITS_TAG.toLowerCase() + ".lore", hits).withStyle(ChatFormatting.YELLOW));
 					}
 				}
 			}

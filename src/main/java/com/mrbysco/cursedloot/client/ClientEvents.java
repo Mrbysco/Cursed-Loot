@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.RenderTooltipEvent;
-import net.minecraftforge.client.gui.GuiUtils;
+import net.minecraftforge.client.gui.ScreenUtils;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -64,7 +64,7 @@ public class ClientEvents {
 //                    int posX = x + 14;
 //                    int posY = y + 14;
 
-				GuiUtils.drawTexturedModalRect(poseStack, x, y, texturePos.getPosX(), texturePos.getPosY(), 32, 32, 1);
+				ScreenUtils.drawTexturedModalRect(poseStack, x, y, texturePos.getPosX(), texturePos.getPosY(), 32, 32, 1);
 			}
 		}
 	}

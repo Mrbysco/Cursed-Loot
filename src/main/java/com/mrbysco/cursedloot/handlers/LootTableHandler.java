@@ -15,16 +15,16 @@ public class LootTableHandler {
 
 	@SubscribeEvent
 	public void onLootTableLoad(PlayerInteractEvent.RightClickBlock event) {
-		Level world = event.getWorld();
-		BlockPos pos = event.getPos();
-		if (!world.isClientSide && event.getHand() == InteractionHand.MAIN_HAND) {
-			BlockEntity te = world.getBlockEntity(pos);
-			if (te instanceof RandomizableContainerBlockEntity chest) {
+		final Level level = event.getLevel();
+		final BlockPos pos = event.getPos();
+		if (!level.isClientSide && event.getHand() == InteractionHand.MAIN_HAND) {
+			BlockEntity be = level.getBlockEntity(pos);
+			if (be instanceof RandomizableContainerBlockEntity chest) {
 				if (chest.lootTable != null) {
 					for (int i = 0; i < chest.getContainerSize(); i++) {
 						ItemStack stack = chest.getItem(i);
 						if (!stack.isEmpty()) {
-							if (world.random.nextInt(100) < 75) {
+							if (level.random.nextInt(100) < 75) {
 								ItemStack cursedStack = CurseHelper.applyRandomCurse(stack);
 								chest.setItem(i, cursedStack);
 							}
@@ -37,13 +37,13 @@ public class LootTableHandler {
 
 	@SubscribeEvent
 	public void onLootTableLoad(PlayerInteractEvent.EntityInteract event) {
-		Level world = event.getWorld();
-		if (!world.isClientSide && event.getTarget() instanceof AbstractMinecartContainer minecartChest) {
+		final Level level = event.getLevel();
+		if (!level.isClientSide && event.getTarget() instanceof AbstractMinecartContainer minecartChest) {
 			if (minecartChest.lootTable != null) {
 				for (int i = 0; i < minecartChest.getContainerSize(); i++) {
 					ItemStack stack = minecartChest.getItem(i);
 					if (!stack.isEmpty()) {
-						if (world.random.nextInt(100) < 75) {
+						if (level.random.nextInt(100) < 75) {
 							ItemStack cursedStack = CurseHelper.applyRandomCurse(stack);
 							minecartChest.setItem(i, cursedStack);
 						}

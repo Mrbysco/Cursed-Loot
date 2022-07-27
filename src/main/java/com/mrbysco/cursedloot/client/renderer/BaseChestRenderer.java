@@ -52,11 +52,11 @@ public class BaseChestRenderer<T extends BlockEntity & LidBlockEntity> implement
 	}
 
 	@Override
-	public void render(T tileEntityIn, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLightIn, int combinedOverlayIn) {
-		Level world = tileEntityIn.getLevel();
-		boolean flag = world != null;
+	public void render(T blockEntityIn, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLightIn, int combinedOverlayIn) {
+		Level level = blockEntityIn.getLevel();
+		boolean flag = level != null;
 
-		BlockState blockstate = flag ? tileEntityIn.getBlockState() : CursedRegistry.BASE_CHEST.get().defaultBlockState().setValue(BaseChestBlock.FACING, Direction.SOUTH);
+		BlockState blockstate = flag ? blockEntityIn.getBlockState() : CursedRegistry.BASE_CHEST.get().defaultBlockState().setValue(BaseChestBlock.FACING, Direction.SOUTH);
 		Block block = blockstate.getBlock();
 
 		if (block instanceof BaseChestBlock abstractchestblock) {
@@ -69,12 +69,12 @@ public class BaseChestRenderer<T extends BlockEntity & LidBlockEntity> implement
 
 			DoubleBlockCombiner.NeighborCombineResult<? extends BaseChestBlockEntity> icallbackwrapper;
 			if (flag) {
-				icallbackwrapper = abstractchestblock.getWrapper(blockstate, world, tileEntityIn.getBlockPos(), true);
+				icallbackwrapper = abstractchestblock.getWrapper(blockstate, level, blockEntityIn.getBlockPos(), true);
 			} else {
 				icallbackwrapper = DoubleBlockCombiner.Combiner::acceptNone;
 			}
 
-			float f1 = icallbackwrapper.<Float2FloatFunction>apply(BaseChestBlock.opennessCombiner(tileEntityIn)).get(partialTicks);
+			float f1 = icallbackwrapper.<Float2FloatFunction>apply(BaseChestBlock.opennessCombiner(blockEntityIn)).get(partialTicks);
 			f1 = 1.0F - f1;
 			f1 = 1.0F - f1 * f1 * f1;
 			int i = icallbackwrapper.<Int2IntFunction>apply(new BrightnessCombiner<>()).applyAsInt(combinedLightIn);

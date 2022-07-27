@@ -103,11 +103,11 @@ public class CursedWorldData extends SavedData {
 		}
 	}
 
-	public static CursedWorldData get(Level world) {
-		if (!(world instanceof ServerLevel)) {
+	public static CursedWorldData get(Level level) {
+		if (!(level instanceof ServerLevel)) {
 			throw new RuntimeException("Attempted to get the data from a client world. This is wrong.");
 		}
-		ServerLevel overworld = world.getServer().getLevel(Level.OVERWORLD);
+		ServerLevel overworld = level.getServer().getLevel(Level.OVERWORLD);
 
 		DimensionDataStorage storage = overworld.getDataStorage();
 		return storage.computeIfAbsent(CursedWorldData::load, CursedWorldData::new, DATA_NAME);

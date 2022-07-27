@@ -26,7 +26,7 @@ public class CursedLoot {
 
 		CursedRegistry.BLOCKS.register(eventBus);
 		CursedRegistry.ITEMS.register(eventBus);
-		CursedRegistry.BLOCK_ENTITIES.register(eventBus);
+		CursedRegistry.BLOCK_ENTITY_TYPES.register(eventBus);
 
 		MinecraftForge.EVENT_BUS.register(new LootTableHandler());
 		MinecraftForge.EVENT_BUS.register(new ItemHandler());
@@ -35,7 +35,7 @@ public class CursedLoot {
 		MinecraftForge.EVENT_BUS.addListener(this::onCommandRegister);
 
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-			eventBus.addListener(ClientHandler::onClientSetup);
+			eventBus.addListener(ClientHandler::registerClientTooltip);
 			eventBus.addListener(ClientHandler::registerRenders);
 			eventBus.addListener(ClientHandler::registerLayerDefinitions);
 			eventBus.addListener(ClientHandler::preStitchEvent);

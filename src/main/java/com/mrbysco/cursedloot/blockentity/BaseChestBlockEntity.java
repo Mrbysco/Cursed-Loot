@@ -4,7 +4,6 @@ import com.mrbysco.cursedloot.Reference;
 import com.mrbysco.cursedloot.init.CursedRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -53,12 +52,12 @@ public class BaseChestBlockEntity extends BlockEntity implements LidBlockEntity 
 		this(CursedRegistry.BASE_CHEST_BLOCK_ENTITY.get(), pos, state);
 	}
 
-	public BaseChestBlockEntity(BlockEntityType<?> tileType, BlockPos pos, BlockState state) {
-		super(tileType, pos, state);
+	public BaseChestBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
+		super(blockEntityType, pos, state);
 	}
 
 	public Component getDefaultName() {
-		return new TranslatableComponent(Reference.MOD_PREFIX + "container.base_chest");
+		return Component.translatable(Reference.MOD_PREFIX + "container.base_chest");
 	}
 
 	public static void lidAnimateTick(Level level, BlockPos pos, BlockState state, BaseChestBlockEntity blockEntity) {
