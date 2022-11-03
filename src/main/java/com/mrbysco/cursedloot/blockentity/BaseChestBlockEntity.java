@@ -8,6 +8,8 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.CompoundContainer;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.level.BlockGetter;
@@ -40,10 +42,7 @@ public class BaseChestBlockEntity extends BlockEntity implements LidBlockEntity 
 			if (!(player.containerMenu instanceof ChestMenu)) {
 				return false;
 			} else {
-				System.out.println(((ChestMenu) player.containerMenu).getContainer());
 				return true;
-//                Container container = ((ChestMenu)player.containerMenu).getContainer();
-//                return container == BaseChestBlockEntity.this || container instanceof CompoundContainer && ((CompoundContainer)container).contains(BaseChestBlockEntity.this);
 			}
 		}
 	};
