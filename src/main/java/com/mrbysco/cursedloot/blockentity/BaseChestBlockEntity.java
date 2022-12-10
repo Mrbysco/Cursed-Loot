@@ -39,7 +39,6 @@ public class BaseChestBlockEntity extends BlockEntity implements LidBlockEntity 
 			if (!(player.containerMenu instanceof ChestMenu)) {
 				return false;
 			} else {
-				System.out.println(((ChestMenu) player.containerMenu).getContainer());
 				return true;
 //                Container container = ((ChestMenu)player.containerMenu).getContainer();
 //                return container == BaseChestBlockEntity.this || container instanceof CompoundContainer && ((CompoundContainer)container).contains(BaseChestBlockEntity.this);

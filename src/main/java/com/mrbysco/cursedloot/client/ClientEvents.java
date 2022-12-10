@@ -61,9 +61,6 @@ public class ClientEvents {
 				RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 				RenderSystem.setShaderTexture(0, icon);
 
-//                    int posX = x + 14;
-//                    int posY = y + 14;
-
 				ScreenUtils.drawTexturedModalRect(poseStack, x, y, texturePos.getPosX(), texturePos.getPosY(), 32, 32, 1);
 			}
 		}

@@ -38,7 +38,6 @@ public class CursedLoot {
 			eventBus.addListener(ClientHandler::registerClientTooltip);
 			eventBus.addListener(ClientHandler::registerRenders);
 			eventBus.addListener(ClientHandler::registerLayerDefinitions);
-			eventBus.addListener(ClientHandler::preStitchEvent);
 			MinecraftForge.EVENT_BUS.register(new ClientEvents());
 		});
 	}

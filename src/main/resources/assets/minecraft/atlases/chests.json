@@ -1,0 +1,8 @@
+{
+    "sources": [
+        {
+            "type": "single",
+            "resource": "cursedloot:entity/base_chest"
+        }
+    ]
+}

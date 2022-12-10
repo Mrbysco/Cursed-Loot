@@ -2,7 +2,7 @@ package com.mrbysco.cursedloot.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.mrbysco.cursedloot.blockentity.BaseChestBlockEntity;
 import com.mrbysco.cursedloot.blocks.BaseChestBlock;
 import com.mrbysco.cursedloot.client.ClientHandler;
@@ -64,7 +64,7 @@ public class BaseChestRenderer<T extends BlockEntity & LidBlockEntity> implement
 			poseStack.pushPose();
 			float f = blockstate.getValue(BaseChestBlock.FACING).toYRot();
 			poseStack.translate(0.5D, 0.5D, 0.5D);
-			poseStack.mulPose(Vector3f.YP.rotationDegrees(-f));
+			poseStack.mulPose(Axis.YP.rotationDegrees(-f));
 			poseStack.translate(-0.5D, -0.5D, -0.5D);
 
 			DoubleBlockCombiner.NeighborCombineResult<? extends BaseChestBlockEntity> icallbackwrapper;
