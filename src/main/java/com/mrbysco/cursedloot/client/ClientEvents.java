@@ -47,7 +47,7 @@ public class ClientEvents {
 		}
 
 		@Override
-		public void renderImage(Font font, int x, int y, PoseStack poseStack, ItemRenderer itemRenderer, int zIndex) {
+		public void renderImage(Font font, int x, int y, PoseStack poseStack, ItemRenderer itemRenderer) {
 			ItemStack stack = tooltip.stack;
 			CompoundTag tags = stack.hasTag() && stack.getTag() != null ? stack.getTag() : new CompoundTag();
 			RenderSystem.enableBlend();
