@@ -44,7 +44,7 @@ public class CursedCommands {
 		final int slot = IntegerArgumentType.getInteger(ctx, "slot");
 		for (ServerPlayer player : EntityArgument.getPlayers(ctx, "player")) {
 			Inventory inventory = player.getInventory();
-			if (slot >= 0) {
+			if (slot >= 0 && slot <= inventory.getContainerSize()) {
 				ItemStack stack = inventory.getItem(slot);
 				if (!stack.isEmpty()) {
 					ItemStack cursedStack = CurseHelper.applyRandomCurse(stack);

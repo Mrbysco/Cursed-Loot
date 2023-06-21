@@ -16,7 +16,7 @@ public class ChestHandler {
 	public void firstJoin(PlayerLoggedInEvent event) {
 		final Player player = event.getEntity();
 
-		if (!player.level.isClientSide) {
+		if (!player.level().isClientSide) {
 			CompoundTag playerData = player.getPersistentData();
 
 			if (!playerData.getBoolean(baseChestTag)) {

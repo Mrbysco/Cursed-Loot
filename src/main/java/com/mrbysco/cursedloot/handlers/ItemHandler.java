@@ -50,7 +50,7 @@ public class ItemHandler {
 	public void inventoryEvent(TickEvent.PlayerTickEvent event) {
 		if (event.phase.equals(TickEvent.Phase.START) && event.side.isServer()) {
 			final Player player = event.player;
-			final Level level = player.level;
+			final Level level = player.level();
 
 			Inventory inv = player.getInventory();
 			for (int i = 0; i < inv.items.size(); i++) {

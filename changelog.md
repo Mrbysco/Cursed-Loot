@@ -1,1 +1,1 @@
-* Initial update to 1.19.4
+* Initial update to 1.20.1 (Requires Forge 47.0.12 or higher)

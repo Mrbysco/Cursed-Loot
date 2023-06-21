@@ -72,8 +72,8 @@ public class BaseChestInventory extends SimpleContainer {
 
 
 		super.stopOpen(player);
-		if (!player.level.isClientSide) {
-			CursedWorldData.get(player.level).setDirty();
+		if (!player.level().isClientSide) {
+			CursedWorldData.get(player.level()).setDirty();
 		}
 		this.associatedChest = null;
 	}

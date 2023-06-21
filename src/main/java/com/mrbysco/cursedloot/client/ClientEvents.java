@@ -7,15 +7,14 @@ import com.mrbysco.cursedloot.util.CurseHelper;
 import com.mrbysco.cursedloot.util.info.CurseLocation;
 import com.mrbysco.cursedloot.util.info.CursePos;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.RenderTooltipEvent;
-import net.minecraftforge.client.gui.ScreenUtils;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -47,7 +46,7 @@ public class ClientEvents {
 		}
 
 		@Override
-		public void renderImage(Font font, int x, int y, PoseStack poseStack, ItemRenderer itemRenderer) {
+		public void renderImage(Font font, int x, int y, GuiGraphics guiGraphics) {
 			ItemStack stack = tooltip.stack;
 			CompoundTag tags = stack.hasTag() && stack.getTag() != null ? stack.getTag() : new CompoundTag();
 			RenderSystem.enableBlend();
@@ -61,7 +60,11 @@ public class ClientEvents {
 				RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 				RenderSystem.setShaderTexture(0, icon);
 
-				ScreenUtils.drawTexturedModalRect(poseStack, x, y, texturePos.getPosX(), texturePos.getPosY(), 32, 32, 1);
+				PoseStack poseStack = guiGraphics.pose();
+				poseStack.pushPose();
+				poseStack.translate(0, 0, 1);
+				guiGraphics.blit(icon, x, y, texturePos.getPosX(), texturePos.getPosY(), 32, 32);
+				poseStack.popPose();
 			}
 		}
 	}
