@@ -43,8 +43,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -88,14 +88,14 @@ public class BaseChestBlock extends AbstractChestBlock<BaseChestBlockEntity> imp
 		return new BaseChestBlockEntity(pos, state);
 	}
 
-	public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
-		BaseChestInventory baseChestInventory = InvHelper.getChestInventory(player, worldIn);
-		BlockEntity blockEntity = worldIn.getBlockEntity(pos);
+	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+		BaseChestInventory baseChestInventory = InvHelper.getChestInventory(player, level);
+		BlockEntity blockEntity = level.getBlockEntity(pos);
 		if (baseChestInventory != null && blockEntity instanceof BaseChestBlockEntity) {
 			BlockPos blockpos = pos.above();
-			if (worldIn.getBlockState(blockpos).isRedstoneConductor(worldIn, blockpos)) {
-				return InteractionResult.sidedSuccess(worldIn.isClientSide);
-			} else if (worldIn.isClientSide) {
+			if (level.getBlockState(blockpos).isRedstoneConductor(level, blockpos)) {
+				return InteractionResult.sidedSuccess(level.isClientSide);
+			} else if (level.isClientSide) {
 				return InteractionResult.SUCCESS;
 			} else {
 				BaseChestBlockEntity baseChestBlockEntityEntity = (BaseChestBlockEntity) blockEntity;
@@ -111,11 +111,11 @@ public class BaseChestBlock extends AbstractChestBlock<BaseChestBlockEntity> imp
 				return InteractionResult.CONSUME;
 			}
 		} else {
-			return InteractionResult.sidedSuccess(worldIn.isClientSide);
+			return InteractionResult.sidedSuccess(level.isClientSide);
 		}
 	}
 
-	public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+	public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
 		return SHAPE;
 	}
 
@@ -169,7 +169,7 @@ public class BaseChestBlock extends AbstractChestBlock<BaseChestBlockEntity> imp
 		return super.updateShape(stateIn, facing, facingState, level, currentPos, facingPos);
 	}
 
-	public boolean isPathfindable(BlockState state, BlockGetter worldIn, BlockPos pos, PathComputationType type) {
+	public boolean isPathfindable(BlockState state, BlockGetter level, BlockPos pos, PathComputationType type) {
 		return false;
 	}
 
@@ -177,8 +177,8 @@ public class BaseChestBlock extends AbstractChestBlock<BaseChestBlockEntity> imp
 		return isBelowSolidBlock(world, pos) || isCatSittingOn(world, pos);
 	}
 
-	private static boolean isBelowSolidBlock(BlockGetter reader, BlockPos worldIn) {
-		BlockPos blockpos = worldIn.above();
+	private static boolean isBelowSolidBlock(BlockGetter reader, BlockPos level) {
+		BlockPos blockpos = level.above();
 		return reader.getBlockState(blockpos).isRedstoneConductor(reader, blockpos);
 	}
 

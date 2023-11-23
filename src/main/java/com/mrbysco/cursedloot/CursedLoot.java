@@ -8,13 +8,13 @@ import com.mrbysco.cursedloot.handlers.ChestHandler;
 import com.mrbysco.cursedloot.handlers.ItemHandler;
 import com.mrbysco.cursedloot.handlers.LootTableHandler;
 import com.mrbysco.cursedloot.init.CursedRegistry;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import org.slf4j.Logger;
 
 @Mod(Reference.MOD_ID)
@@ -28,18 +28,18 @@ public class CursedLoot {
 		CursedRegistry.ITEMS.register(eventBus);
 		CursedRegistry.BLOCK_ENTITY_TYPES.register(eventBus);
 
-		MinecraftForge.EVENT_BUS.register(new LootTableHandler());
-		MinecraftForge.EVENT_BUS.register(new ItemHandler());
-		MinecraftForge.EVENT_BUS.register(new ChestHandler());
+		NeoForge.EVENT_BUS.register(new LootTableHandler());
+		NeoForge.EVENT_BUS.register(new ItemHandler());
+		NeoForge.EVENT_BUS.register(new ChestHandler());
 
-		MinecraftForge.EVENT_BUS.addListener(this::onCommandRegister);
+		NeoForge.EVENT_BUS.addListener(this::onCommandRegister);
 
-		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+		if (FMLEnvironment.dist == Dist.CLIENT) {
 			eventBus.addListener(ClientHandler::registerClientTooltip);
 			eventBus.addListener(ClientHandler::registerRenders);
 			eventBus.addListener(ClientHandler::registerLayerDefinitions);
-			MinecraftForge.EVENT_BUS.register(new ClientEvents());
-		});
+			NeoForge.EVENT_BUS.register(new ClientEvents());
+		}
 	}
 
 	public void onCommandRegister(RegisterCommandsEvent event) {

@@ -110,6 +110,6 @@ public class CursedWorldData extends SavedData {
 		ServerLevel overworld = level.getServer().getLevel(Level.OVERWORLD);
 
 		DimensionDataStorage storage = overworld.getDataStorage();
-		return storage.computeIfAbsent(CursedWorldData::load, CursedWorldData::new, DATA_NAME);
+		return storage.computeIfAbsent(new SavedData.Factory<>(CursedWorldData::new, CursedWorldData::load), DATA_NAME);
 	}
 }

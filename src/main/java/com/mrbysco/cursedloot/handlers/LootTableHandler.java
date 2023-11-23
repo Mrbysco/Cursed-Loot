@@ -8,8 +8,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 public class LootTableHandler {
 
@@ -39,7 +39,7 @@ public class LootTableHandler {
 	public void onLootTableLoad(PlayerInteractEvent.EntityInteract event) {
 		final Level level = event.getLevel();
 		if (!level.isClientSide && event.getTarget() instanceof AbstractMinecartContainer minecartChest) {
-			if (minecartChest.lootTable != null) {
+			if (minecartChest.getLootTable() != null) {
 				for (int i = 0; i < minecartChest.getContainerSize(); i++) {
 					ItemStack stack = minecartChest.getItem(i);
 					if (!stack.isEmpty()) {

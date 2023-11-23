@@ -10,21 +10,21 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.FakePlayer;
+import net.neoforged.neoforge.common.util.FakePlayer;
 
 import javax.annotation.Nullable;
 
 public class InvHelper {
 
 	@Nullable
-	public static BaseChestInventory getChestInventory(Player player, Level worldIn) {
-		if (worldIn.isClientSide || player instanceof FakePlayer) {
+	public static BaseChestInventory getChestInventory(Player player, Level level) {
+		if (level.isClientSide || player instanceof FakePlayer) {
 			return null;
 		} else {
 			if (player.getTeam() != null) {
-				return CursedWorldData.get(worldIn).getInventoryFromTeam(player.getTeam().getName());
+				return CursedWorldData.get(level).getInventoryFromTeam(player.getTeam().getName());
 			} else {
-				return CursedWorldData.get(worldIn).getInventoryFromUUID(player.getUUID());
+				return CursedWorldData.get(level).getInventoryFromUUID(player.getUUID());
 			}
 		}
 	}
