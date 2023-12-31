@@ -1,5 +1,6 @@
 package com.mrbysco.cursedloot.blocks;
 
+import com.mojang.serialization.MapCodec;
 import com.mrbysco.cursedloot.blockentity.BaseChestBlockEntity;
 import com.mrbysco.cursedloot.blocks.inventory.BaseChestInventory;
 import com.mrbysco.cursedloot.init.CursedRegistry;
@@ -52,17 +53,23 @@ import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 
 public class BaseChestBlock extends AbstractChestBlock<BaseChestBlockEntity> implements SimpleWaterloggedBlock {
+	public static final MapCodec<BaseChestBlock> CODEC = simpleCodec(BaseChestBlock::new);
+
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 	protected static final VoxelShape SHAPE = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
 	private final Supplier<BlockEntityType<? extends BaseChestBlockEntity>> tileEntityTypeSupplier = CursedRegistry.BASE_CHEST_BLOCK_ENTITY::get;
+
+	public MapCodec<BaseChestBlock> codec() {
+		return CODEC;
+	}
 
 	public BaseChestBlock(BlockBehaviour.Properties builder) {
 		super(builder, CursedRegistry.BASE_CHEST_BLOCK_ENTITY::get);
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, Boolean.valueOf(false)));
 	}
 
-	public DoubleBlockCombiner.NeighborCombineResult<? extends BaseChestBlockEntity> getWrapper(BlockState state, Level world, BlockPos pos, boolean override) {
+	public DoubleBlockCombiner.NeighborCombineResult<? extends BaseChestBlockEntity> getWrapper(BlockState state, Level level, BlockPos pos, boolean override) {
 		BiPredicate<LevelAccessor, BlockPos> biPredicate;
 		if (override) {
 			biPredicate = (p_226918_0_, p_226918_1_) -> false;
@@ -70,7 +77,7 @@ public class BaseChestBlock extends AbstractChestBlock<BaseChestBlockEntity> imp
 			biPredicate = BaseChestBlock::isBlocked;
 		}
 
-		return DoubleBlockCombiner.combineWithNeigbour(tileEntityTypeSupplier.get(), BaseChestBlock::getMergerType, BaseChestBlock::getDirectionToAttached, FACING, state, world, pos, biPredicate);
+		return DoubleBlockCombiner.combineWithNeigbour(tileEntityTypeSupplier.get(), BaseChestBlock::getMergerType, BaseChestBlock::getDirectionToAttached, FACING, state, level, pos, biPredicate);
 	}
 
 	public static DoubleBlockCombiner.BlockType getMergerType(BlockState blockState) {
@@ -91,14 +98,13 @@ public class BaseChestBlock extends AbstractChestBlock<BaseChestBlockEntity> imp
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
 		BaseChestInventory baseChestInventory = InvHelper.getChestInventory(player, level);
 		BlockEntity blockEntity = level.getBlockEntity(pos);
-		if (baseChestInventory != null && blockEntity instanceof BaseChestBlockEntity) {
+		if (baseChestInventory != null && blockEntity instanceof BaseChestBlockEntity baseChestBlockEntityEntity) {
 			BlockPos blockpos = pos.above();
 			if (level.getBlockState(blockpos).isRedstoneConductor(level, blockpos)) {
 				return InteractionResult.sidedSuccess(level.isClientSide);
 			} else if (level.isClientSide) {
 				return InteractionResult.SUCCESS;
 			} else {
-				BaseChestBlockEntity baseChestBlockEntityEntity = (BaseChestBlockEntity) blockEntity;
 				baseChestInventory.setChestBlockEntity(baseChestBlockEntityEntity);
 				if (baseChestInventory.getContainerSize() == 27) {
 					player.openMenu(new SimpleMenuProvider((id, inventory, playerIn) -> ChestMenu.threeRows(id, inventory, baseChestInventory),
@@ -173,8 +179,8 @@ public class BaseChestBlock extends AbstractChestBlock<BaseChestBlockEntity> imp
 		return false;
 	}
 
-	public static boolean isBlocked(LevelAccessor world, BlockPos pos) {
-		return isBelowSolidBlock(world, pos) || isCatSittingOn(world, pos);
+	public static boolean isBlocked(LevelAccessor levelAccessor, BlockPos pos) {
+		return isBelowSolidBlock(levelAccessor, pos) || isCatSittingOn(levelAccessor, pos);
 	}
 
 	private static boolean isBelowSolidBlock(BlockGetter reader, BlockPos level) {
@@ -182,11 +188,11 @@ public class BaseChestBlock extends AbstractChestBlock<BaseChestBlockEntity> imp
 		return reader.getBlockState(blockpos).isRedstoneConductor(reader, blockpos);
 	}
 
-	private static boolean isCatSittingOn(LevelAccessor world, BlockPos pos) {
-		List<Cat> list = world.getEntitiesOfClass(Cat.class, new AABB((double) pos.getX(), (double) (pos.getY() + 1), (double) pos.getZ(), (double) (pos.getX() + 1), (double) (pos.getY() + 2), (double) (pos.getZ() + 1)));
+	private static boolean isCatSittingOn(LevelAccessor levelAccessor, BlockPos pos) {
+		List<Cat> list = levelAccessor.getEntitiesOfClass(Cat.class, new AABB((double) pos.getX(), (double) (pos.getY() + 1), (double) pos.getZ(), (double) (pos.getX() + 1), (double) (pos.getY() + 2), (double) (pos.getZ() + 1)));
 		if (!list.isEmpty()) {
-			for (Cat catentity : list) {
-				if (catentity.isInSittingPose()) {
+			for (Cat cat : list) {
+				if (cat.isInSittingPose()) {
 					return true;
 				}
 			}
@@ -196,7 +202,7 @@ public class BaseChestBlock extends AbstractChestBlock<BaseChestBlockEntity> imp
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public DoubleBlockCombiner.NeighborCombineResult<? extends ChestBlockEntity> combine(BlockState state, Level world, BlockPos pos, boolean override) {
+	public DoubleBlockCombiner.NeighborCombineResult<? extends ChestBlockEntity> combine(BlockState state, Level level, BlockPos pos, boolean override) {
 		return DoubleBlockCombiner.Combiner::acceptNone;
 	}
 
@@ -205,7 +211,7 @@ public class BaseChestBlock extends AbstractChestBlock<BaseChestBlockEntity> imp
 	}
 
 	@Nullable
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level p_153055_, BlockState state, BlockEntityType<T> blockEntityType) {
-		return p_153055_.isClientSide ? createTickerHelper(blockEntityType, this.blockEntityType(), BaseChestBlockEntity::lidAnimateTick) : null;
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+		return level.isClientSide ? createTickerHelper(blockEntityType, this.blockEntityType(), BaseChestBlockEntity::lidAnimateTick) : null;
 	}
 }

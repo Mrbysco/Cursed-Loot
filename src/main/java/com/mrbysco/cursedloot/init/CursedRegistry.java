@@ -21,7 +21,7 @@ public class CursedRegistry {
 	public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Reference.MOD_ID);
 	public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, Reference.MOD_ID);
 
-	public static final DeferredBlock<Block> BASE_CHEST = BLOCKS.register("base_chest", () -> new BaseChestBlock(Block.Properties.copy(Blocks.CHEST)
+	public static final DeferredBlock<Block> BASE_CHEST = BLOCKS.register("base_chest", () -> new BaseChestBlock(Block.Properties.ofFullCopy(Blocks.CHEST)
 			.strength(2.5F, 1000.0F).sound(SoundType.WOOD).noOcclusion()));
 	public static final DeferredItem<Item> BASE_CHEST_ITEM = ITEMS.register("base_chest", () -> new BaseChestBlockItem(BASE_CHEST.get(), new Item.Properties()));
 

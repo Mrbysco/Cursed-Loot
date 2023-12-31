@@ -80,9 +80,9 @@ public class BaseChestRenderer<T extends BlockEntity & LidBlockEntity> implement
 			int i = icallbackwrapper.<Int2IntFunction>apply(new BrightnessCombiner<>()).applyAsInt(combinedLightIn);
 
 			Material rendermaterial = new Material(Sheets.CHEST_SHEET, ClientHandler.BASE_CHEST_LOCATION);
-			VertexConsumer ivertexbuilder = rendermaterial.buffer(bufferSource, RenderType::entityCutout);
+			VertexConsumer vertexConsumer = rendermaterial.buffer(bufferSource, RenderType::entityCutout);
 
-			this.render(poseStack, ivertexbuilder, this.lid, this.lock, this.bottom, f1, i, combinedOverlayIn);
+			this.render(poseStack, vertexConsumer, this.lid, this.lock, this.bottom, f1, i, combinedOverlayIn);
 
 			poseStack.popPose();
 		}
