@@ -1,1 +1,1 @@
-* Initial update to 1.20.4
+* Remove left over logging
